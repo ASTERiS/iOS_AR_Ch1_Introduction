@@ -9,6 +9,7 @@
 //TEST02
 //TEST03
 //test04_note
+//test05_server
 
 #import <UIKit/UIKit.h>
 
