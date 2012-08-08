@@ -18,29 +18,6 @@
 {
     [super viewDidLoad];
 	// Do any additional setup after loading the view, typically from a nib.
-    
-    BOOL cameraAvailable = [UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeCamera];
-//    BOOL frontCameraAvailable = [UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerCameraDeviceFront];
-    
-    if (cameraAvailable) {
-        UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"Camera"
-                                                       message:@"Camera Available"
-                                                      delegate:self
-                                             cancelButtonTitle:@"OK"
-                                             otherButtonTitles:nil, nil];
-        [alert show];
-    } else {
-        UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"Camera"
-                                                       message:@"Camera NOT Available"
-                                                      delegate:self
-                                             cancelButtonTitle:@"OK"
-                                             otherButtonTitles:nil, nil];
-        [alert show ];
-        
-    }
-    
-    
-    
 }
 
 - (void)viewDidUnload
