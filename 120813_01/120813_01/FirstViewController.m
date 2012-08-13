@@ -14,8 +14,9 @@
 @end
 
 @implementation FirstViewController
+@synthesize myImageView;
 @synthesize locationTextView; 
-
+@synthesize headingTextView;
 
 
 
@@ -44,7 +45,8 @@
 {
     [super viewDidUnload];
     // Release any retained subviews of the main view.
-    
+//    [self setMyImageView:nil];
+    [self startSignificantChangeUpdates];
 }
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
@@ -65,7 +67,7 @@
     if (abs(howRecent) <15.0)
     {
     
-    locationTextView.text = [NSString stringWithFormat:@"latitude %+.6f, longitude %+.6f\n", 
+    locationTextView.text = [NSString stringWithFormat:@"위도:%+.6f\n경도:%+.6f\n",
                              newLocation.coordinate.latitude,
                              newLocation.coordinate.longitude];
     }else {
@@ -73,36 +75,55 @@
     }
 }
 
+
+-(void)locationManager:(CLLocationManager *)manager didUpdateHeading:(CLHeading *)newHeading
+{
+    NSDate* eventDate = newHeading.timestamp;
+    NSTimeInterval howRecent = [eventDate timeIntervalSinceNow];
+    if (abs(howRecent) <15.0)
+    {
+
+    headingTextView.text =[NSString stringWithFormat:@"방위:%+3.2f\n",newHeading.trueHeading];
+          myImageView.transform = CGAffineTransformMakeRotation(-(newHeading.trueHeading)*(M_PI/180));
+//        myImageView.transform = CGAffineTransformMakeRotation(180*(M_PI/(newHeading.trueHeading)));
+        [UIView commitAnimations];
+
+    }else {
+        headingTextView.text = @"Update was old";
+    }
+    
+}
+
+
+
 -(void)startStandardUpdates
 {
     locationManager = [[CLLocationManager alloc] init];
     locationManager.delegate = self;
     locationManager.desiredAccuracy = kCLLocationAccuracyKilometer;
     locationManager.distanceFilter = 500;
-    locationTextView.text = @"TEST3";
     [locationManager startUpdatingLocation];
-    locationTextView.text = @"TEST4";
-/*
-    if([CLLocationManager locationServicesEnabled]){
-        locationTextView.text =@"위치정보서비스 활성화 성공";
-        [locationManager startUpdatingLocation];
-    } else {
-        locationTextView.text = @"위치정보서비스 활성화 실패";
-        
-        
-    }
-*/
+
     if ([CLLocationManager locationServicesEnabled]) {
         [locationManager startUpdatingLocation];
-            locationTextView.text = @"TEST5\n";
     }
     
     if ([CLLocationManager headingAvailable]) {
         [locationManager startUpdatingHeading];
-            locationTextView.text = @"TEST6";
     }
-    
-    
+    [UIView beginAnimations:@"anime0" context:NULL];
+    [UIView setAnimationRepeatCount:0];
 }
+
+
+-(void)startSignificantChangeUpdates
+{
+    locationManager = [[CLLocationManager alloc]init];
+    locationManager.delegate = self;
+    [locationManager startMonitoringSignificantLocationChanges];
+}
+
+
+
 
 @end

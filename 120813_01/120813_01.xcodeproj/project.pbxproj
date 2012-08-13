@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		84A9624015D91D9E00F5AE36 /* I_010329.png in Resources */ = {isa = PBXBuildFile; fileRef = 84A9623F15D91D9E00F5AE36 /* I_010329.png */; };
 		89CE40C415D88CC600625514 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 89CE40C315D88CC600625514 /* UIKit.framework */; };
 		89CE40C615D88CC600625514 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 89CE40C515D88CC600625514 /* Foundation.framework */; };
 		89CE40C815D88CC600625514 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 89CE40C715D88CC600625514 /* CoreGraphics.framework */; };
@@ -42,6 +43,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		84A9623F15D91D9E00F5AE36 /* I_010329.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = I_010329.png; sourceTree = "<group>"; };
 		89CE40BF15D88CC600625514 /* 120813_01.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = 120813_01.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		89CE40C315D88CC600625514 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		89CE40C515D88CC600625514 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -132,6 +134,7 @@
 		89CE40C915D88CC600625514 /* 120813_01 */ = {
 			isa = PBXGroup;
 			children = (
+				84A9623F15D91D9E00F5AE36 /* I_010329.png */,
 				89CE40D215D88CC700625514 /* AppDelegate.h */,
 				89CE40D315D88CC700625514 /* AppDelegate.m */,
 				89CE40D515D88CC700625514 /* FirstViewController.h */,
@@ -260,6 +263,7 @@
 				89CE40E815D88CC700625514 /* FirstViewController_iPad.xib in Resources */,
 				89CE40EB15D88CC700625514 /* SecondViewController_iPhone.xib in Resources */,
 				89CE40EE15D88CC700625514 /* SecondViewController_iPad.xib in Resources */,
+				84A9624015D91D9E00F5AE36 /* I_010329.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -493,6 +497,7 @@
 				89CE410815D88CC700625514 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		89CE410915D88CC700625514 /* Build configuration list for PBXNativeTarget "120813_01Tests" */ = {
 			isa = XCConfigurationList;
@@ -501,6 +506,7 @@
 				89CE410B15D88CC700625514 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
