@@ -13,7 +13,8 @@
 @interface FirstViewController : UIViewController <CLLocationManagerDelegate>
 {
     UITextView *locationTextView;
-
+    CLLocationManager *locationManager;
+    
 }
 
 @property (nonatomic, retain) IBOutlet UITextView *locationTextView;

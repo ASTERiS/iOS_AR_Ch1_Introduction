@@ -75,7 +75,7 @@
 
 -(void)startStandardUpdates
 {
-    CLLocationManager *locationManager = [[CLLocationManager alloc] init];
+    locationManager = [[CLLocationManager alloc] init];
     locationManager.delegate = self;
     locationManager.desiredAccuracy = kCLLocationAccuracyKilometer;
     locationManager.distanceFilter = 500;
