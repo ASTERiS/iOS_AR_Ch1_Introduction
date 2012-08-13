@@ -33,23 +33,9 @@
 {
 
     locationTextView.text = @"TEST";
-//    [self startStandardUpdates];
+
     [super viewDidLoad];
-	// Do any additional setup after loading the view, typically from a nib.
-    CLLocationManager *locationManager = [[CLLocationManager alloc] init];
-    locationManager.delegate = self;
-    locationManager.desiredAccuracy = kCLLocationAccuracyKilometer;
-    locationManager.distanceFilter = 500;
-    locationTextView.text = @"TEST3";
-    [locationManager startUpdatingLocation];
-    locationTextView.text = @"TEST4";
-    
-    if([CLLocationManager locationServicesEnabled]){
-        locationTextView.text =@"위치정보서비스 활성화 성공";
-        [locationManager startUpdatingLocation];
-    } else {
-        locationTextView.text = @"위치정보서비스 활성화 실패";
-    }
+    [self startStandardUpdates];
 
     
 }
@@ -86,7 +72,7 @@
         locationTextView.text = @"Update was old";
     }
 }
-/*
+
 -(void)startStandardUpdates
 {
     CLLocationManager *locationManager = [[CLLocationManager alloc] init];
@@ -96,14 +82,27 @@
     locationTextView.text = @"TEST3";
     [locationManager startUpdatingLocation];
     locationTextView.text = @"TEST4";
-    
+/*
     if([CLLocationManager locationServicesEnabled]){
         locationTextView.text =@"위치정보서비스 활성화 성공";
         [locationManager startUpdatingLocation];
     } else {
         locationTextView.text = @"위치정보서비스 활성화 실패";
+        
+        
     }
-}
 */
+    if ([CLLocationManager locationServicesEnabled]) {
+        [locationManager startUpdatingLocation];
+            locationTextView.text = @"TEST5\n";
+    }
+    
+    if ([CLLocationManager headingAvailable]) {
+        [locationManager startUpdatingHeading];
+            locationTextView.text = @"TEST6";
+    }
+    
+    
+}
 
 @end
