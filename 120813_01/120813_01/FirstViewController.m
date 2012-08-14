@@ -37,8 +37,8 @@
 
     locationTextView.text = @"TEST";
 
-    [self startStandardUpdates];
-    
+//    [self startStandardUpdates];
+      [self startSignificantChangeUpdates];  
     
 /*
     if ([CLLocationManager regionMonitoringAvailable]) {
@@ -50,13 +50,37 @@
     
 }
 
+
+
+
 - (void)viewDidUnload
 {
     [super viewDidUnload];
     // Release any retained subviews of the main view.
 //    [self setMyImageView:nil];
-    [self startSignificantChangeUpdates];
+
 }
+
+
+
+- (void)dealloc
+{
+//    [locationTextView release];
+    [locationManager stopMonitoringForRegion:region];
+    [locationManager stopMonitoringSignificantLocationChanges];
+    [locationManager stopUpdatingHeading];
+    [locationManager stopUpdatingLocation];
+    locationTextView = nil;
+//    [super dealloc];
+}
+
+
+
+
+
+
+
+
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
 {
@@ -155,11 +179,7 @@
     [UIView beginAnimations:@"anime0" context:NULL];
     [UIView setAnimationRepeatCount:0];
     
-    
-    CLLocationCoordinate2D coord = CLLocationCoordinate2DMake(37.787359, -122.408227);
-    CLRegion *region = [[CLRegion alloc]initCircularRegionWithCenter:coord radius:100.0 identifier:@"San Francisco"];
-    
-    [locationManager startMonitoringForRegion:region desiredAccuracy:kCLLocationAccuracyKilometer];
+ 
 
     
     
@@ -170,7 +190,18 @@
 {
     locationManager = [[CLLocationManager alloc]init];
     locationManager.delegate = self;
+    locationManager.distanceFilter = 500;
+    
     [locationManager startMonitoringSignificantLocationChanges];
+    [UIView beginAnimations:@"anime0" context:NULL];
+    [UIView setAnimationRepeatCount:0];
+    if ([CLLocationManager locationServicesEnabled]) {
+        [locationManager startUpdatingLocation];
+    }
+    
+    if ([CLLocationManager headingAvailable]) {
+        [locationManager startUpdatingHeading];
+    }
 }
        
 -(void)startRegionMonitoring
@@ -180,7 +211,7 @@
     locationManager.delegate = self;
     
     CLLocationCoordinate2D coord = CLLocationCoordinate2DMake(37.787359, -122.408227);
-    CLRegion *region = [[CLRegion alloc]initCircularRegionWithCenter:coord radius:100.0 identifier:@"San Francisco"];
+    region = [[CLRegion alloc]initCircularRegionWithCenter:coord radius:100.0 identifier:@"San Francisco"];
     
     [locationManager startMonitoringForRegion:region desiredAccuracy:kCLLocationAccuracyKilometer];
 }
