@@ -13,15 +13,12 @@
 @interface FirstViewController : UIViewController <CLLocationManagerDelegate>
 {
     UITextView* locationTextView;
-    UITextView* headingTextView;
-    CLLocationManager *locationManager;
-    CLLocationManager *locationManager2;
+//    CLLocationManager *locationManager;
+    
     
 }
 
 @property (nonatomic, retain) IBOutlet UITextView *locationTextView;
-@property (nonatomic, retain) IBOutlet UITextView *headingTextView;
-@property (strong, nonatomic) IBOutlet UIImageView *myImageView;
 
 -(void)startStandardUpdates;
 -(void)startSignificantChangeUpdates;

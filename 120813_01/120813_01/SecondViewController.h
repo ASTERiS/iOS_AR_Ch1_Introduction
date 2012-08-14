@@ -7,15 +7,10 @@
 //
 
 #import <UIKit/UIKit.h>
-#import <CoreLocation/CoreLocation.h>
 
-@interface SecondViewController : UIViewController <CLLocationManagerDelegate>
+@interface SecondViewController : UIViewController
 {
-    UILabel*    _label;
-    CLLocationManager* _locationManager;
-    CLLocationDegrees* _latitude;
-    CLLocationDegrees* _longitude;
-    CLLocationDirection* _heading;
+
 }
 
 @end

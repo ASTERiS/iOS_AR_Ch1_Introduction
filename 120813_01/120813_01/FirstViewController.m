@@ -10,14 +10,11 @@
 //#import <CoreLocation/CoreLocation.h>
 
 
-@interface FirstViewController ()
-
-@end
+//@interface FirstViewController ()
+//@end
 
 @implementation FirstViewController
-@synthesize myImageView;
 @synthesize locationTextView; 
-@synthesize headingTextView;
 
 
 
@@ -31,22 +28,16 @@
 
  return self;
 }
-							
+						
 - (void)viewDidLoad
 {
-
-    locationTextView.text = @"TEST";
-
     [self startStandardUpdates];
+    //[self startSignificantChangeUpdates];
     
-    
-/*
     if ([CLLocationManager regionMonitoringAvailable]) {
-        [self startRegionMonitoring];
+        //        [self startRegionMonitoring];
     }
-*/
- [super viewDidLoad];
-
+    [super viewDidLoad];
     
 }
 
@@ -55,7 +46,9 @@
     [super viewDidUnload];
     // Release any retained subviews of the main view.
 //    [self setMyImageView:nil];
-    [self startSignificantChangeUpdates];
+    
+
+ 
 }
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
@@ -63,127 +56,85 @@
     if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone) {
         return (interfaceOrientation != UIInterfaceOrientationPortraitUpsideDown);
     } else {
-        return YES;
+        return NO;
     }
 }
 
 
 
--(void)locationManager:(CLLocationManager *)manager didUpdateToLocation:(CLLocation *)newLocation fromLocation:(CLLocation *)oldLocation
+- (void)startStandardUpdates
 {
-    locationTextView.text = @"TEST2";
-    NSDate* eventDate = newLocation.timestamp;
-    NSTimeInterval howRecent = [eventDate timeIntervalSinceNow];
-    if (abs(howRecent) <15.0)
-    {
-        
-        CLLocationDistance dist = [newLocation distanceFromLocation:oldLocation]/1000;
-    locationTextView.text = [NSString stringWithFormat:@"위도:%+.6f\n경도:%+.6f\n거리:%5.1f 이동",
-                             newLocation.coordinate.latitude,
-                             newLocation.coordinate.longitude,
-                             dist];
-    }else {
-        locationTextView.text = @"Update was old";
-    }
-}
-
-
--(void)locationManager:(CLLocationManager *)manager didUpdateHeading:(CLHeading *)newHeading
-{
-    NSDate* eventDate = newHeading.timestamp;
-    NSTimeInterval howRecent = [eventDate timeIntervalSinceNow];
-    if (abs(howRecent) <15.0)
-    {
-
-    headingTextView.text =[NSString stringWithFormat:@"방위:%+3.2f\n",newHeading.trueHeading];
-          myImageView.transform = CGAffineTransformMakeRotation(-(newHeading.trueHeading)*(M_PI/180));
-//        myImageView.transform = CGAffineTransformMakeRotation(180*(M_PI/(newHeading.trueHeading)));
-        [UIView commitAnimations];
-
-    }else {
-        headingTextView.text = @"Update was old";
-    }
-    
-}
-
-
--(void)locationManager:(CLLocationManager *)manager didEnterRegion:(CLRegion *)region
-{
-    NSLog(@"지역 진입");
-    UIAlertView* alert = [[UIAlertView alloc]initWithTitle:@"지역 경보"
-                                                   message:@"지역 안에 들어왔음"
-                                                  delegate:self
-                                         cancelButtonTitle:@"OK"
-                                         otherButtonTitles:nil, nil];
-    [alert show];
-    
-}
-/*
--(void)locationManager:(CLLocationManager *)manager didExitRegion:(CLRegion *)region
-{
-    NSLog(@"지역벗어남");
-    UIAlertView* alert = [[UIAlertView alloc]initWithTitle:@"지역 경보"
-                                                   message:@"지역을 벗어났음"
-                                                  delegate:self
-                                         cancelButtonTitle:@"OK"
-                                         otherButtonTitles:nil, nil];
-    [alert show];
-    
-}
-*/
--(void)locationManager:(CLLocationManager *)manager didExitRegion:(CLRegion *)region
-{
-    NSLog(@"지역 벗어남");
-}
-
-
--(void)startStandardUpdates
-{
-    locationManager = [[CLLocationManager alloc] init];
+    CLLocationManager *locationManager = [[CLLocationManager alloc] init];
     locationManager.delegate = self;
-    locationManager.desiredAccuracy = kCLLocationAccuracyKilometer;
+    locationManager.desiredAccuracy = kCLLocationAccuracyBest;
     locationManager.distanceFilter = 500;
+    
     [locationManager startUpdatingLocation];
+}
 
-    if ([CLLocationManager locationServicesEnabled]) {
-        [locationManager startUpdatingLocation];
-    }
-    
-    if ([CLLocationManager headingAvailable]) {
-        [locationManager startUpdatingHeading];
-    }
-    [UIView beginAnimations:@"anime0" context:NULL];
-    [UIView setAnimationRepeatCount:0];
-    
+- (void)startRegionMonitoring
+{
+    NSLog(@"Starting region monitoring");
+    CLLocationManager *locationManager = [[CLLocationManager alloc] init];
+    locationManager.delegate = self;
     
     CLLocationCoordinate2D coord = CLLocationCoordinate2DMake(37.787359, -122.408227);
-    CLRegion *region = [[CLRegion alloc]initCircularRegionWithCenter:coord radius:100.0 identifier:@"San Francisco"];
+    CLRegion *region = [[CLRegion alloc] initCircularRegionWithCenter:coord radius:1000.0 identifier:@"San Francisco"];
     
     [locationManager startMonitoringForRegion:region desiredAccuracy:kCLLocationAccuracyKilometer];
+}
 
-    
-    
+- (void)locationManager:(CLLocationManager *)manager didEnterRegion:(CLRegion *)region {
+    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Region Alert"
+                                                    message:@"You entered the region"
+                                                   delegate:self
+                                          cancelButtonTitle:@"OK"
+                                          otherButtonTitles:nil, nil];
+    [alert show];
+//    [alert release];
+}
+
+- (void)locationManager:(CLLocationManager *)manager didExitRegion:(CLRegion *)region {
+    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Region Alert"
+                                                    message:@"You exited the region"
+                                                   delegate:self
+                                          cancelButtonTitle:@"OK"
+                                          otherButtonTitles:nil, nil];
+    [alert show];
+//    [alert release];
 }
 
 
--(void)startSignificantChangeUpdates
+// use significant-change location service
+- (void)startSignificantChangeUpdates
 {
-    locationManager = [[CLLocationManager alloc]init];
+    CLLocationManager *locationManager = [[CLLocationManager alloc] init];
     locationManager.delegate = self;
     [locationManager startMonitoringSignificantLocationChanges];
 }
-       
--(void)startRegionMonitoring
-{
-    NSLog(@"리전 모니터링 시작");
-    locationManager =[[CLLocationManager alloc]init];
-    locationManager.delegate = self;
-    
-    CLLocationCoordinate2D coord = CLLocationCoordinate2DMake(37.787359, -122.408227);
-    CLRegion *region = [[CLRegion alloc]initCircularRegionWithCenter:coord radius:100.0 identifier:@"San Francisco"];
-    
-    [locationManager startMonitoringForRegion:region desiredAccuracy:kCLLocationAccuracyKilometer];
-}
 
+- (void)locationManager:(CLLocationManager *)manager
+    didUpdateToLocation:(CLLocation *)newLocation
+           fromLocation:(CLLocation *)oldLocation
+{
+    NSDate* eventDate = newLocation.timestamp;
+    NSTimeInterval howRecent = [eventDate timeIntervalSinceNow];
+    if (abs(howRecent) < 15.0)
+    {
+        locationTextView.text = [NSString stringWithFormat:@"latitude %+.6f, longitude %+.6f\n",
+                                 newLocation.coordinate.latitude,
+                                 newLocation.coordinate.longitude];
+        
+        //        CLLocationDistance dist = [newLocation distanceFromLocation:oldLocation] / 1000;
+        //        locationTextView.text = [NSString stringWithFormat:@"distance %5.1f traveled"];
+        
+    } else {
+        locationTextView.text = @"Update was old";
+        // you'd probably just do nothing here and ignore the event
+    }
+    
+    
+    //    locationTextView.text = [NSString stringWithFormat:@"%6.2f m. ", newLocation.altitude];
+}
 
 @end
