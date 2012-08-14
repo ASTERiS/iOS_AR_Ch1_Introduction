@@ -8,12 +8,10 @@
 
 #import <UIKit/UIKit.h>
 
-
 @interface AppDelegate : UIResponder <UIApplicationDelegate, UITabBarControllerDelegate>
-//@interface iOS_AR_Ch3_LocationServicesAppDelegate : NSObject <UIApplicationDelegate, UITabBarControllerDelegate>
-
 
 @property (strong, nonatomic) UIWindow *window;
+
 @property (strong, nonatomic) UITabBarController *tabBarController;
 
 @end
