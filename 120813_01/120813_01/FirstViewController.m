@@ -35,8 +35,11 @@
 
     locationTextView.text = @"TEST";
 
-    [super viewDidLoad];
     [self startStandardUpdates];
+    if ([CLLocationManager regionMonitoringAvailable]) {
+        [self startRegionMonitoring];
+    }
+    [super viewDidLoad];
 
     
 }
@@ -95,6 +98,29 @@
 }
 
 
+-(void)locationManager:(CLLocationManager *)manager didEnterRegion:(CLRegion *)region
+{
+    UIAlertView* alert = [[UIAlertView alloc]initWithTitle:@"지역 경보"
+                                                   message:@"지역 안에 들어왔음"
+                                                  delegate:self
+                                         cancelButtonTitle:@"OK"
+                                         otherButtonTitles:nil, nil];
+    [alert show];
+    
+}
+
+-(void)locationManager:(CLLocationManager *)manager didExitRegion:(CLRegion *)region
+{
+    UIAlertView* alert = [[UIAlertView alloc]initWithTitle:@"지역 경보"
+                                                   message:@"지역을 벗어났음"
+                                                  delegate:self
+                                         cancelButtonTitle:@"OK"
+                                         otherButtonTitles:nil, nil];
+    [alert show];
+    
+}
+
+
 
 -(void)startStandardUpdates
 {
@@ -122,8 +148,18 @@
     locationManager.delegate = self;
     [locationManager startMonitoringSignificantLocationChanges];
 }
-
-
+       
+-(void)startRegionMonitoring
+{
+    NSLog(@"리전 모니터링 시작");
+    locationManager =[[CLLocationManager alloc]init];
+    locationManager.delegate = self;
+    
+    CLLocationCoordinate2D coord = CLLocationCoordinate2DMake(37.787359, -122.408227);
+    CLRegion *region = [[CLRegion alloc]initCircularRegionWithCenter:coord radius:1000.0 identifier:@"샌프란시스코"];
+    
+    [locationManager startMonitoringForRegion:region desiredAccuracy:kCLLocationAccuracyKilometer];
+}
 
 
 @end

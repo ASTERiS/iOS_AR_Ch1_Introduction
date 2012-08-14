@@ -24,7 +24,7 @@
 
 -(void)startStandardUpdates;
 -(void)startSignificantChangeUpdates;
-
+-(void)startRegionMonitoring;
 
 
 
