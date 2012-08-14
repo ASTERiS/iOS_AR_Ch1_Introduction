@@ -1,29 +1,18 @@
 //
-//  SecondViewController.m
-//  120814_01
+//  ViewController.m
+//  120814_02
 //
 //  Created by Administrator on 8/14/12.
 //  Copyright (c) 2012 Administrator. All rights reserved.
 //
 
-#import "SecondViewController.h"
+#import "ViewController.h"
 
-@interface SecondViewController ()
+@interface ViewController ()
 
 @end
 
-@implementation SecondViewController
-
-- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
-{
-    self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
-    if (self) {
-        self.title = NSLocalizedString(@"Second", @"Second");
-        self.tabBarItem.image = [UIImage imageNamed:@"second"];
-    }
-    return self;
-}
-							
+@implementation ViewController
 
 -(void)dealloc
 {
@@ -82,13 +71,13 @@
     
     _locationManager=[[CLLocationManager alloc]init];
     _locationManager.delegate = self;
-     if ([CLLocationManager locationServicesEnabled]) {
-     [_locationManager startUpdatingLocation];
-     }
-     
-     if ([CLLocationManager headingAvailable]) {
-     [_locationManager startUpdatingHeading];
-     }
+    if ([CLLocationManager locationServicesEnabled]) {
+        [_locationManager startUpdatingLocation];
+    }
+    
+    if ([CLLocationManager headingAvailable]) {
+        [_locationManager startUpdatingHeading];
+    }
     //    [NSTimer scheduledTimerWithTimeInterval:0.1f target:self selector:@selector(onTick:) userInfo:nil repeats:YES];
     
 }
@@ -137,7 +126,5 @@
     //    (CLHeading*)_heading = newHeading.trueHeading;
     
 }
-
-
 
 @end

@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		842FBE4615DA5B0A008EBBAC /* I_010329.png in Resources */ = {isa = PBXBuildFile; fileRef = 842FBE4515DA5B0A008EBBAC /* I_010329.png */; };
+		842FBE4915DA5BD1008EBBAC /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 842FBE4815DA5BD1008EBBAC /* CoreLocation.framework */; };
 		847DA49015DA55F9004AF55F /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 847DA48F15DA55F9004AF55F /* UIKit.framework */; };
 		847DA49215DA55F9004AF55F /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 847DA49115DA55F9004AF55F /* Foundation.framework */; };
 		847DA49415DA55F9004AF55F /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 847DA49315DA55F9004AF55F /* CoreGraphics.framework */; };
@@ -24,6 +26,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		842FBE4515DA5B0A008EBBAC /* I_010329.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = I_010329.png; sourceTree = "<group>"; };
+		842FBE4815DA5BD1008EBBAC /* CoreLocation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreLocation.framework; path = System/Library/Frameworks/CoreLocation.framework; sourceTree = SDKROOT; };
 		847DA48B15DA55F9004AF55F /* 120814_01.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = 120814_01.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		847DA48F15DA55F9004AF55F /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		847DA49115DA55F9004AF55F /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -51,6 +55,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				842FBE4915DA5BD1008EBBAC /* CoreLocation.framework in Frameworks */,
 				847DA49015DA55F9004AF55F /* UIKit.framework in Frameworks */,
 				847DA49215DA55F9004AF55F /* Foundation.framework in Frameworks */,
 				847DA49415DA55F9004AF55F /* CoreGraphics.framework in Frameworks */,
@@ -63,6 +68,7 @@
 		847DA48015DA55F9004AF55F = {
 			isa = PBXGroup;
 			children = (
+				842FBE4815DA5BD1008EBBAC /* CoreLocation.framework */,
 				847DA49515DA55F9004AF55F /* 120814_01 */,
 				847DA48E15DA55F9004AF55F /* Frameworks */,
 				847DA48C15DA55F9004AF55F /* Products */,
@@ -90,6 +96,7 @@
 		847DA49515DA55F9004AF55F /* 120814_01 */ = {
 			isa = PBXGroup;
 			children = (
+				842FBE4515DA5B0A008EBBAC /* I_010329.png */,
 				847DA49E15DA55F9004AF55F /* AppDelegate.h */,
 				847DA49F15DA55F9004AF55F /* AppDelegate.m */,
 				847DA4A115DA55F9004AF55F /* FirstViewController.h */,
@@ -176,6 +183,7 @@
 				847DA4AE15DA55F9004AF55F /* second@2x.png in Resources */,
 				847DA4B115DA55F9004AF55F /* FirstViewController.xib in Resources */,
 				847DA4B415DA55FA004AF55F /* SecondViewController.xib in Resources */,
+				842FBE4615DA5B0A008EBBAC /* I_010329.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -311,6 +319,7 @@
 				847DA4B915DA55FA004AF55F /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
