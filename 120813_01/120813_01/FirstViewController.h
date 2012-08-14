@@ -15,6 +15,7 @@
     UITextView* locationTextView;
     UITextView* headingTextView;
     CLLocationManager *locationManager;
+    CLLocationManager *locationManager2;
     
 }
 

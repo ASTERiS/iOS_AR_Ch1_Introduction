@@ -27,7 +27,8 @@
         self.title = NSLocalizedString(@"First", @"First");
         self.tabBarItem.image = [UIImage imageNamed:@"first"];
     }
-    return self;
+
+ return self;
 }
 							
 - (void)viewDidLoad
@@ -36,10 +37,14 @@
     locationTextView.text = @"TEST";
 
     [self startStandardUpdates];
+    
+    
+/*
     if ([CLLocationManager regionMonitoringAvailable]) {
         [self startRegionMonitoring];
     }
-    [super viewDidLoad];
+*/
+ [super viewDidLoad];
 
     
 }
@@ -62,6 +67,7 @@
 }
 
 
+
 -(void)locationManager:(CLLocationManager *)manager didUpdateToLocation:(CLLocation *)newLocation fromLocation:(CLLocation *)oldLocation
 {
     locationTextView.text = @"TEST2";
@@ -69,10 +75,12 @@
     NSTimeInterval howRecent = [eventDate timeIntervalSinceNow];
     if (abs(howRecent) <15.0)
     {
-    
-    locationTextView.text = [NSString stringWithFormat:@"위도:%+.6f\n경도:%+.6f\n",
+        
+        CLLocationDistance dist = [newLocation distanceFromLocation:oldLocation]/1000;
+    locationTextView.text = [NSString stringWithFormat:@"위도:%+.6f\n경도:%+.6f\n거리:%5.1f 이동",
                              newLocation.coordinate.latitude,
-                             newLocation.coordinate.longitude];
+                             newLocation.coordinate.longitude,
+                             dist];
     }else {
         locationTextView.text = @"Update was old";
     }
@@ -100,6 +108,7 @@
 
 -(void)locationManager:(CLLocationManager *)manager didEnterRegion:(CLRegion *)region
 {
+    NSLog(@"지역 진입");
     UIAlertView* alert = [[UIAlertView alloc]initWithTitle:@"지역 경보"
                                                    message:@"지역 안에 들어왔음"
                                                   delegate:self
@@ -108,9 +117,10 @@
     [alert show];
     
 }
-
+/*
 -(void)locationManager:(CLLocationManager *)manager didExitRegion:(CLRegion *)region
 {
+    NSLog(@"지역벗어남");
     UIAlertView* alert = [[UIAlertView alloc]initWithTitle:@"지역 경보"
                                                    message:@"지역을 벗어났음"
                                                   delegate:self
@@ -119,7 +129,11 @@
     [alert show];
     
 }
-
+*/
+-(void)locationManager:(CLLocationManager *)manager didExitRegion:(CLRegion *)region
+{
+    NSLog(@"지역 벗어남");
+}
 
 
 -(void)startStandardUpdates
@@ -139,6 +153,15 @@
     }
     [UIView beginAnimations:@"anime0" context:NULL];
     [UIView setAnimationRepeatCount:0];
+    
+    
+    CLLocationCoordinate2D coord = CLLocationCoordinate2DMake(37.787359, -122.408227);
+    CLRegion *region = [[CLRegion alloc]initCircularRegionWithCenter:coord radius:100.0 identifier:@"San Francisco"];
+    
+    [locationManager startMonitoringForRegion:region desiredAccuracy:kCLLocationAccuracyKilometer];
+
+    
+    
 }
 
 
@@ -156,7 +179,7 @@
     locationManager.delegate = self;
     
     CLLocationCoordinate2D coord = CLLocationCoordinate2DMake(37.787359, -122.408227);
-    CLRegion *region = [[CLRegion alloc]initCircularRegionWithCenter:coord radius:1000.0 identifier:@"샌프란시스코"];
+    CLRegion *region = [[CLRegion alloc]initCircularRegionWithCenter:coord radius:100.0 identifier:@"San Francisco"];
     
     [locationManager startMonitoringForRegion:region desiredAccuracy:kCLLocationAccuracyKilometer];
 }
