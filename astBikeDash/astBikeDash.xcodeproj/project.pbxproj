@@ -317,6 +317,7 @@
 				84E8DACC15DC96B1005BE68D /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

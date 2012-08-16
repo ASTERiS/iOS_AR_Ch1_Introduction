@@ -15,11 +15,11 @@
 @implementation FirstViewController
 @synthesize gpsProgressView;
 @synthesize infoSpeedView;
+@synthesize dateView;
+@synthesize infoSpeedView2;
 @synthesize infoTextView;
 @synthesize gpsSignalView;
 @synthesize locationManager;
-
-
 
 
 
@@ -47,7 +47,7 @@
 
     //타이머 생성
     
-    [NSTimer scheduledTimerWithTimeInterval:0.1f
+    [NSTimer scheduledTimerWithTimeInterval:0.2f
                                      target:self
                                    selector:@selector(onTick:)
                                    userInfo:nil
@@ -63,6 +63,8 @@
     [self setGpsSignalView:nil];
     [self setGpsProgressView:nil];
     [self setInfoSpeedView:nil];
+    [self setDateView:nil];
+    [self setInfoSpeedView2:nil];
     [super viewDidUnload];
     // Release any retained subviews of the main view.
     
@@ -77,6 +79,8 @@
 //정기처리
 -(void)onTick:(NSTimer*)timer
 {
+    
+    // 속도 처리
     if (tempSpeed>=maxSpeed){
         maxSpeed = tempSpeed;
     }
@@ -89,9 +93,16 @@
         tempSpeed3 = 0.0f;
     }
     
-    infoSpeedView.text = [NSString stringWithFormat:@"%6.2f",tempSpeed3];
-
-
+    infoSpeedView.text = [NSString stringWithFormat:@"%03.0f",tempSpeed3];
+    infoSpeedView2.text = [NSString stringWithFormat:@"%6.2f",tempSpeed3];
+    
+    //날짜 처리
+    
+    //날짜 콤포넌트 취득
+    unsigned int unitFlag= NSYearCalendarUnit|NSMonthCalendarUnit|NSDayCalendarUnit|NSHourCalendarUnit|NSMinuteCalendarUnit|NSSecondCalendarUnit;
+    comps=[calendar components:unitFlag fromDate:[NSDate date]];
+    dateView.text = [NSString stringWithFormat:@"%02d.%02d.    %02d:%02d.%02d ",comps.month,comps.day,comps.hour,comps.minute,comps.second];
+    
 }
 
 #pragma mark GPS_Delegate
@@ -103,9 +114,9 @@
     NSLog(@"델리게이트 호출#1");
     
     //속도?
-    tempSpeed = [newLocation speed];
+    tempSpeed = [newLocation speed]*3.6; // m/s를 km/h로 바꾸기 (60*60)/1000
     // 거리정보 취득
-    CLLocationDistance dist = [newLocation distanceFromLocation:oldLocation]/10;
+    CLLocationDistance dist = [newLocation distanceFromLocation:oldLocation];
     totalDist += abs(dist);
 
     
@@ -130,21 +141,19 @@
     
     // GPS 신호 정확성 체크
     
-    if (newLocation.horizontalAccuracy < 0)
+    if (newLocation.horizontalAccuracy < 0.0)
     {
         gpsSignalView.text =[NSString stringWithFormat:@"No Signal : %6f",newLocation.horizontalAccuracy];
-        
-        
         gpsProgressView.progress = (1.0-((abs(newLocation.horizontalAccuracy))+1.0)/200.0);
         
     }
-    else if (newLocation.horizontalAccuracy > 163)
+    else if (newLocation.horizontalAccuracy > 163.0)
     {
         gpsSignalView.text =[NSString stringWithFormat:@"poor Signal : %6f",newLocation.horizontalAccuracy];
              // Poor Signal
         gpsProgressView.progress = (1.0-((abs(newLocation.horizontalAccuracy))+1.0)/200.0);
     }
-    else if (newLocation.horizontalAccuracy > 48)
+    else if (newLocation.horizontalAccuracy > 48.0)
     {
         gpsSignalView.text =[NSString stringWithFormat:@"Average Signal : %6f",newLocation.horizontalAccuracy];
  // Average Signal
@@ -167,7 +176,7 @@
     NSDate* eventDate = newLocation.timestamp;
     NSTimeInterval howRecent = [eventDate timeIntervalSinceNow];
     if (abs(howRecent) < 15.0) {
-        infoTextView.text = [NSString stringWithFormat:@"위도 : %+6f 경도 : %+6f\n높이 : %6.2f 최고속 : %+6f\n속도 : %+6f\n속도2 : %+6f\n총이동거리 : %+6f\n",
+        infoTextView.text = [NSString stringWithFormat:@"위도 : %+6f\t경도 : %+6f\n높이 : %6.2f\t\t최고속 : %6.2fkm/h\n속도 : %6.2fm/s\t속도 : %6.2fkm/h\n총이동거리 : %010.1fm\n",
                              newLocation.coordinate.latitude,//위도
                              newLocation.coordinate.longitude,//경도
                              newLocation.altitude, //tempAltitude
@@ -217,7 +226,7 @@
     self.locationManager=[[CLLocationManager alloc]init];
     self.locationManager.delegate=self;
     self.locationManager.desiredAccuracy = kCLLocationAccuracyBest;
-    self.locationManager.distanceFilter = 10;               // 필터?
+    self.locationManager.distanceFilter = 1;               // 필터?
 
     
     // 혹시 이전 주요 위치변화 정보 모니터링 기능이 켜져있다면 끄고 시작한다.
@@ -232,8 +241,12 @@
 		NSLog(@"Significant location change monitoring is not available.");
 	}
     
-    
-    
+    //날짜 정보 초기화
+    calendar= nil;
+    comps = nil;
+    // 오브젝트 대입
+    calendar = [[NSCalendar alloc]initWithCalendarIdentifier:NSGregorianCalendar];
+
     
 }
 
