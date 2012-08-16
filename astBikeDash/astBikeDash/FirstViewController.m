@@ -93,8 +93,11 @@
         tempSpeed3 = 0.0f;
     }
     
-    infoSpeedView.text = [NSString stringWithFormat:@"%03.0f",tempSpeed3];
-    infoSpeedView2.text = [NSString stringWithFormat:@"%6.2f",tempSpeed3];
+    infoSpeedView.text = [NSString stringWithFormat:@"%03.0f",tempSpeed3]; // 큰 숫자 표시
+    
+    double tempNum;  // 소수점 구하기
+    tempNum = modf(tempSpeed3, &tempNum);
+    infoSpeedView2.text = [NSString stringWithFormat:@".%02.0f",tempNum*100]; // 작은 숫자 표시 소수점*100 
     
     //날짜 처리
     
