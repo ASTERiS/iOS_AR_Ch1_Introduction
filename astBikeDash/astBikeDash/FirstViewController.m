@@ -77,6 +77,12 @@
 //정기처리
 -(void)onTick:(NSTimer*)timer
 {
+    if (tempSpeed>=maxSpeed){
+        maxSpeed = tempSpeed;
+    }
+        
+    
+    
     float tempSpeed3 = (tempSpeed+lastSpeed)/2;
     lastSpeed=tempSpeed3;
     if (tempSpeed<=0) {
@@ -161,10 +167,11 @@
     NSDate* eventDate = newLocation.timestamp;
     NSTimeInterval howRecent = [eventDate timeIntervalSinceNow];
     if (abs(howRecent) < 15.0) {
-        infoTextView.text = [NSString stringWithFormat:@"위도 : %+6f\n경도 : %+6f\n높이 : %6.2f\n속도 : %+6f\n속도2 : %+6f\n총이동거리 : %+6f\n",
+        infoTextView.text = [NSString stringWithFormat:@"위도 : %+6f 경도 : %+6f\n높이 : %6.2f 최고속 : %+6f\n속도 : %+6f\n속도2 : %+6f\n총이동거리 : %+6f\n",
                              newLocation.coordinate.latitude,//위도
                              newLocation.coordinate.longitude,//경도
-                             newLocation.altitude, //tempAltitude,
+                             newLocation.altitude, //tempAltitude
+                             maxSpeed,
                              newLocation.speed,//속도
                              tempSpeed,
                              totalDist];
@@ -209,7 +216,7 @@
 
     self.locationManager=[[CLLocationManager alloc]init];
     self.locationManager.delegate=self;
-    self.locationManager.desiredAccuracy = kCLLocationAccuracyBestForNavigation;
+    self.locationManager.desiredAccuracy = kCLLocationAccuracyBest;
     self.locationManager.distanceFilter = 10;               // 필터?
 
     
