@@ -281,6 +281,7 @@
 				842FBF1115DA8CFD008EBBAC /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
