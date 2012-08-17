@@ -103,9 +103,9 @@
 				84E8DAB915DC96B1005BE68D /* first@2x.png */,
 				84E8DABB15DC96B1005BE68D /* SecondViewController.h */,
 				84E8DABC15DC96B1005BE68D /* SecondViewController.m */,
+				84E8DAC515DC96B1005BE68D /* SecondViewController.xib */,
 				84E8DABE15DC96B1005BE68D /* second.png */,
 				84E8DAC015DC96B1005BE68D /* second@2x.png */,
-				84E8DAC515DC96B1005BE68D /* SecondViewController.xib */,
 				84E8DAA915DC96B0005BE68D /* Supporting Files */,
 			);
 			path = astBikeDash;

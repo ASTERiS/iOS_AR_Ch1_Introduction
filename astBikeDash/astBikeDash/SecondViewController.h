@@ -7,7 +7,13 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "FirstViewController.h"
+//@class FirstViewController;
 
-@interface SecondViewController : UIViewController
+@interface SecondViewController : FirstViewController
+
+- (IBAction)filter1;
+
+
 
 @end

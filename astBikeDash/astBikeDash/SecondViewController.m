@@ -8,11 +8,15 @@
 
 #import "SecondViewController.h"
 
+
+
 @interface SecondViewController ()
 
 @end
 
 @implementation SecondViewController
+
+
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
@@ -32,6 +36,8 @@
 
 - (void)viewDidUnload
 {
+
+
     [super viewDidUnload];
     // Release any retained subviews of the main view.
 }
@@ -41,4 +47,10 @@
     return (interfaceOrientation != UIInterfaceOrientationPortraitUpsideDown);
 }
 
+
+- (IBAction)filter1 {
+    FirstViewController* fVC;
+    
+    [fVC setFilter:100];
+}
 @end

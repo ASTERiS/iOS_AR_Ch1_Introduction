@@ -42,6 +42,7 @@
 	// Do any additional setup after loading the view, typically from a nib.
 
     totalDist = 0.0f;    // 변수 초기화
+
     
     [self startLocationInit];    // 위치정보 초기화 호출
 
@@ -93,14 +94,11 @@
         tempSpeed3 = 0.0f;
     }
     
-    infoSpeedView.text = [NSString stringWithFormat:@"%03.0f",tempSpeed3]; // 큰 숫자 표시
-    
-    double tempNum;  // 소수점 구하기
-    tempNum = modf(tempSpeed3, &tempNum);
-    infoSpeedView2.text = [NSString stringWithFormat:@".%02.0f",tempNum*100]; // 작은 숫자 표시 소수점*100 
+    infoSpeedView.text = [NSString stringWithFormat:@"%03d",(int)tempSpeed3]; // 큰 숫자 표시
+    double tempNum = tempSpeed3-(int)tempSpeed3;
+    infoSpeedView2.text = [NSString stringWithFormat:@".%1.0f",tempNum*10]; // 작은 숫자 표시 소수점*10
     
     //날짜 처리
-    
     //날짜 콤포넌트 취득
     unsigned int unitFlag= NSYearCalendarUnit|NSMonthCalendarUnit|NSDayCalendarUnit|NSHourCalendarUnit|NSMinuteCalendarUnit|NSSecondCalendarUnit;
     comps=[calendar components:unitFlag fromDate:[NSDate date]];
@@ -119,8 +117,11 @@
     //속도?
     tempSpeed = [newLocation speed]*3.6; // m/s를 km/h로 바꾸기 (60*60)/1000
     // 거리정보 취득
+    // 이부분 체크할 것 ---------------------------------------------------------------------------------------------------
     CLLocationDistance dist = [newLocation distanceFromLocation:oldLocation];
-    totalDist += abs(dist);
+    if (tempSpeed>=0) {
+        totalDist += abs(dist);
+    }
 
     
     // 높이정보 사용가능여부 확인
@@ -147,26 +148,30 @@
     if (newLocation.horizontalAccuracy < 0.0)
     {
         gpsSignalView.text =[NSString stringWithFormat:@"No Signal : %6f",newLocation.horizontalAccuracy];
-        gpsProgressView.progress = (1.0-((abs(newLocation.horizontalAccuracy))+1.0)/200.0);
+        gpsProgressView.progress = 0.0;
         
     }
     else if (newLocation.horizontalAccuracy > 163.0)
     {
         gpsSignalView.text =[NSString stringWithFormat:@"poor Signal : %6f",newLocation.horizontalAccuracy];
              // Poor Signal
-        gpsProgressView.progress = (1.0-((abs(newLocation.horizontalAccuracy))+1.0)/200.0);
+            gpsProgressView.progress = (2-pow(1.004,newLocation.horizontalAccuracy-5.0));
     }
     else if (newLocation.horizontalAccuracy > 48.0)
     {
-        gpsSignalView.text =[NSString stringWithFormat:@"Average Signal : %6f",newLocation.horizontalAccuracy];
- // Average Signal
-        gpsProgressView.progress = (1.0-((abs(newLocation.horizontalAccuracy))+1.0)/200.0);
+        gpsSignalView.text =[NSString stringWithFormat:@"Average Signal : %6f",newLocation.horizontalAccuracy]; // Average Signal
+            gpsProgressView.progress = (2-pow(1.004,newLocation.horizontalAccuracy-5.0));
     }
     else
     {
-        gpsSignalView.text =[NSString stringWithFormat:@"Full Signal : %6f",newLocation.horizontalAccuracy];
-;// Full Signal
-        gpsProgressView.progress = (1.0-((abs(newLocation.horizontalAccuracy))+1.0)/200.0);
+        gpsSignalView.text =[NSString stringWithFormat:@"Full Signal : %6f",newLocation.horizontalAccuracy];// Full Signal
+        
+//        gpsProgressView.progress = (exp(abs(newLocation.horizontalAccuracy)));
+        if (newLocation.horizontalAccuracy<=5) {
+            gpsProgressView.progress = 1.0;
+        }
+            gpsProgressView.progress = (2-pow(1.004,newLocation.horizontalAccuracy-5.0));
+        
     }
     
     
@@ -178,15 +183,17 @@
     // 정보 표시 (정보 갱신 있는지 확인)
     NSDate* eventDate = newLocation.timestamp;
     NSTimeInterval howRecent = [eventDate timeIntervalSinceNow];
+
     if (abs(howRecent) < 15.0) {
-        infoTextView.text = [NSString stringWithFormat:@"위도 : %+6f\t경도 : %+6f\n높이 : %6.2f\t\t최고속 : %6.2fkm/h\n속도 : %6.2fm/s\t속도 : %6.2fkm/h\n총이동거리 : %010.1fm\n",
+        infoTextView.text = [NSString stringWithFormat:@"위도 : %+6f\t경도 : %+6f\n높이 : %6.2f\t\t최고속 : %6.2fkm/h\n속도 : %6.2fm/s\t속도 : %6.2fkm/h\n총이동거리 : %010.1fm\n필터:%f",
                              newLocation.coordinate.latitude,//위도
                              newLocation.coordinate.longitude,//경도
                              newLocation.altitude, //tempAltitude
                              maxSpeed,
                              newLocation.speed,//속도
                              tempSpeed,
-                             totalDist];
+                             totalDist,
+                             self.locationManager.distanceFilter];
        
     }else{
         infoTextView.text =@"Update was old";
@@ -211,7 +218,7 @@
         
         
         NSLog(@"위치정보취득은 허가되어있지 않음");
-    }else{
+    }else{ 
         UIAlertView* alert = [[UIAlertView alloc]initWithTitle:@""
                                                        message:@"위치정보 취득 실패."
                                                       delegate:self
@@ -223,13 +230,16 @@
 }
 
 // 위치정보 취득 초기화
+
+
 -(void)startLocationInit
 {
 
     self.locationManager=[[CLLocationManager alloc]init];
     self.locationManager.delegate=self;
     self.locationManager.desiredAccuracy = kCLLocationAccuracyBest;
-    self.locationManager.distanceFilter = 1;               // 필터?
+//    self.locationManager.distanceFilter = kCLDistanceFilterNone;               // 필터?
+    self.locationManager.distanceFilter = 10;               // 필터?
 
     
     // 혹시 이전 주요 위치변화 정보 모니터링 기능이 켜져있다면 끄고 시작한다.
@@ -253,6 +263,10 @@
     
 }
 
+-(void)setFilter:(int)tempFilter
+{
+        self.locationManager.distanceFilter = tempFilter;
+}
 
 
 @end
