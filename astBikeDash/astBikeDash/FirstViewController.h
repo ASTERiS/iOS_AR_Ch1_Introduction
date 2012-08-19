@@ -37,4 +37,5 @@
 -(void)startLocationInit; // 위치정보 취득 초기화
 -(void)setFilter:(int)tempFilter;
 
+
 @end

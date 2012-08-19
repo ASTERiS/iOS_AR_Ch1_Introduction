@@ -1,18 +1,27 @@
 //
 //  SecondViewController.h
-//  astBikeDash
+//  test
 //
-//  Created by Administrator on 8/16/12.
+//  Created by Administrator on 8/20/12.
 //  Copyright (c) 2012 Administrator. All rights reserved.
 //
 
 #import <UIKit/UIKit.h>
-#import "FirstViewController.h"
-//@class FirstViewController;
+#import <AVFoundation/AVFoundation.h>
+#import <MediaPlayer/MediaPlayer.h>
 
-@interface SecondViewController : FirstViewController
+@interface SecondViewController : UIViewController <MPMediaPickerControllerDelegate,UIPickerViewDelegate> {
+    AVAudioPlayer* _player[2];
+    MPMediaPickerController* mpc;
+    MPMediaQuery *myPlaylistsQuery;
+    NSArray *playlists;
+    UIPickerView*   _pickerView;
+    NSMutableArray* _items;
+    int             _selectIdx;
+}
 
-- (IBAction)filter1;
+- (IBAction)selectMusic:(id)sender;
+
 
 
 
