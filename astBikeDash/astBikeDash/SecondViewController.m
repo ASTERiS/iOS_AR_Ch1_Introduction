@@ -64,15 +64,17 @@
     [super viewDidLoad];
 	// Do any additional setup after loading the view, typically from a nib.
     //BGM再生ボタンの生成
-    UIButton* btnBGMStart=[self makeButton:CGRectMake(0,0,200,40)
-                                      text:@"BGM再生/停止" tag:BTN_BGM_PLAY];
+    UIButton* btnBGMStart=[self makeButton:CGRectMake(10,10,200,40)
+                                      text:@"BGM재생/정지" tag:BTN_BGM_PLAY];
     [self.view addSubview:btnBGMStart];
     
     //SE再生ボタンの生成
-    UIButton* btnSEPlay=[self makeButton:CGRectMake(0,50,200,40)
-                                    text:@"SE再生" tag:BTN_SE_PLAY];
+    UIButton* btnSEPlay=[self makeButton:CGRectMake(10,60,200,40)
+                                    text:@"SE재생" tag:BTN_SE_PLAY];
     [self.view addSubview:btnSEPlay];
     
+
+/*
     //ボリュームアップボタンの生成
     UIButton* btnVolUp=[self makeButton:CGRectMake(0,100,200,40)
                                    text:@"ボリュームアップ" tag:BTN_VOL_UP];
@@ -82,6 +84,7 @@
     UIButton* btnVolDown=[self makeButton:CGRectMake(0,150,200,40)
                                      text:@"ボリュームダウン" tag:BTN_VOL_DOWN];
     [self.view addSubview:btnVolDown];
+*/
     
     //プレーヤーの生成
     _player[0]=[self makeAudioPlayer:@"re_bgm.mp3"] ;
