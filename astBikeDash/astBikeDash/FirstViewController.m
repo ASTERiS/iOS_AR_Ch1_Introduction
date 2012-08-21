@@ -22,6 +22,7 @@
 @synthesize locationManager;
 
 
+
 // 탭 이름 설정.
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
