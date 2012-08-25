@@ -17,10 +17,14 @@
     CLLocationManager*  locationManager;
     UITextView*         infoTextView;
     float               totalDist;  //총거리 합산용
+    float               totalDist2;  //총거리 합산용 2
     CLLocationSpeed     tempSpeed, lastSpeed, maxSpeed;  //속도용
     UIProgressView*     gpsProgressView; //GPS 프로그래스바
     NSCalendar*         calendar;
     NSDateComponents*   comps;
+    CLLocation*         tempOldLocation;
+
+    
 }
 
 

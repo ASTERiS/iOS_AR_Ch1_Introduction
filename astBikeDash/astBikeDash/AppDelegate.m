@@ -25,6 +25,8 @@
     self.tabBarController.viewControllers = @[viewController1, viewController2];
     self.window.rootViewController = self.tabBarController;
     [self.window makeKeyAndVisible];
+    [[UIApplication sharedApplication] setIdleTimerDisabled:YES]; // 화면 잠김으로 들어가지 않게 함.
+    
     return YES;
 }
 
@@ -45,9 +47,13 @@
 
     if ([CLLocationManager significantLocationChangeMonitoringAvailable]) {
 		// Stop normal location updates and start significant location change updates for battery efficiency.
-		[firstViewController.locationManager stopUpdatingLocation];
+        NSLog(@"1.%@",firstViewController.locationManager);
+        [firstViewController.locationManager stopUpdatingLocation];
         NSLog(@"백그라운드 진입");
 		[firstViewController.locationManager startMonitoringSignificantLocationChanges];
+        
+        NSLog(@"2.%@",firstViewController.locationManager);
+        [[UIApplication sharedApplication] setIdleTimerDisabled:NO]; // 화면 잠김세팅 풀기
 	}
 	else {
 		NSLog(@"Significant location change monitoring is not available.");
@@ -75,6 +81,7 @@
 		[firstViewController.locationManager stopMonitoringSignificantLocationChanges];
         NSLog(@"활성화");
 		[firstViewController.locationManager startUpdatingLocation];
+        [[UIApplication sharedApplication] setIdleTimerDisabled:YES]; // 화면 잠김으로 들어가지 않게 함.
 	}
 	else {
 		NSLog(@"Significant location change monitoring is not available.");

@@ -21,7 +21,7 @@
 @synthesize gpsSignalView;
 @synthesize locationManager;
 
-
+int tempError;
 
 // 탭 이름 설정.
 
@@ -42,6 +42,9 @@
 	// Do any additional setup after loading the view, typically from a nib.
 
     totalDist = 0.0f;    // 변수 초기화
+    totalDist2 = 0.0f;    // 변수 초기화
+    tempOldLocation = nil; //임시 과거 위치 기억 변수 초기화
+    tempError = 0;
     
     [self startLocationInit];    // 위치정보 초기화 호출
 
@@ -51,6 +54,8 @@
                                    selector:@selector(onTick:)
                                    userInfo:nil
                                     repeats:YES];
+    
+
     
     
 
@@ -71,7 +76,8 @@
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
 {
-    return (interfaceOrientation != UIInterfaceOrientationPortraitUpsideDown);
+//    return (interfaceOrientation != UIInterfaceOrientationPortraitUpsideDown);
+    return NO;
 }
 
 
@@ -117,15 +123,39 @@
 -(void)locationManager:(CLLocationManager *)manager didUpdateToLocation:(CLLocation *)newLocation fromLocation:(CLLocation *)oldLocation
 {
     NSLog(@"델리게이트 호출#1");
+
     
     //속도?
     tempSpeed = [newLocation speed]*3.6; // m/s를 km/h로 바꾸기 (60*60)/1000
-    // 거리정보 취득
+
+    // 거리정보 취득 #1 델리게이트 호출 시 자동 계산 된 거리 계산.
     CLLocationDistance dist = [newLocation distanceFromLocation:oldLocation];
-    if (!(tempSpeed<=0)) { // 속도 측정할 수 없으면 거리 합산 하지 않는다.
+    if (!(tempSpeed<=0.0)) { // 속도 측정할 수 없으면 거리 합산 하지 않는다.
         totalDist += abs(dist);
     }
+    
+    // 거리정보 취득 #2 기존 마지막 위치를 기준으로 새 거리 계산법
+    
+    if(!(tempSpeed<=0.0)){ //속도 측정할 수 없으면 거리 합산하지 않는다.
+        NSLog(@"--------");
+        NSLog(@"tempSpeed:%f",tempSpeed);
+        if (tempOldLocation!=nil){ // 초기 위치값을 얻기 전까지는 더하지 않는다.
+            NSLog(@"NEW    Location:%@",newLocation);
+            NSLog(@"tempOldLocation:%@",tempOldLocation);
+            if (!(oldLocation==tempOldLocation)) { //위치정보 차이 몇번이나 발생했나?
+                tempError++;
+            }
+            CLLocationDistance dist2 = [newLocation distanceFromLocation:tempOldLocation];
+            totalDist2 += abs(dist2);
+        }
+            tempOldLocation = newLocation; //현재 위치를 과거 위치로 기록 & 속도 측정할 수 없으면 바꾸지 않는다.
+    }
+    
 
+    
+    
+    
+    
     // 높이정보 사용가능여부 확인
     //높이용임시 변수
     /*
@@ -177,14 +207,17 @@
 
     if (abs(howRecent) < 15.0)
     {
-        infoTextView.text = [NSString stringWithFormat:@"위도 : %+6f\t경도 : %+6f\n높이 : %6.2f\t\t최고속 : %6.2fkm/h\n속도 : %6.2fm/s\t속도 : %6.2fkm/h\n총이동거리 : %010.1fm\n필터:%f",
+        infoTextView.text = [NSString stringWithFormat:@"위도 : %+6f\t경도 : %+6f\n높이 : %6.2f\t\t최고속 : %6.2fkm/h\n속도 : %6.2fm/s\t속도 : %6.2fkm/h\n총이동거리 : %08.3fkm\n총이동거리2 : %08.3fkm\n오차 : %dm\t\t\t오류 빈도 : %d\n필터 : %f",
                              newLocation.coordinate.latitude,//위도
                              newLocation.coordinate.longitude,//경도
                              newLocation.altitude, //tempAltitude
                              maxSpeed,
                              newLocation.speed,//속도
                              tempSpeed,
-                             totalDist,
+                             totalDist/1000,
+                             totalDist2/1000,
+                             abs(totalDist2-totalDist),
+                             tempError,
                              self.locationManager.distanceFilter];
        
     }
@@ -260,6 +293,9 @@
 {
         self.locationManager.distanceFilter = tempFilter;
 }
+
+
+
 
 
 
