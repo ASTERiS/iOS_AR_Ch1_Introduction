@@ -55,7 +55,15 @@ int tempError;
                                    userInfo:nil
                                     repeats:YES];
     
-
+    //프리퍼런스 누적 거리 준비 만약 없다면 0을 기록하고 아니라면 패스
+    NSUserDefaults* pref = [NSUserDefaults standardUserDefaults];
+    if (!([pref floatForKey:@"prefTotalDist"])) { // 값이 없으면 여기 실행
+        prefTotalDist = 0.0f;
+        [pref setFloat:prefTotalDist forKey:@"prefTotalDist"];
+        [pref synchronize];
+    }else{ //값이 있으면 읽기.
+         prefTotalDist = [pref floatForKey:@"prefTotalDist"];
+    }
     
     
 
@@ -151,6 +159,13 @@ int tempError;
             tempOldLocation = newLocation; //현재 위치를 과거 위치로 기록 & 속도 측정할 수 없으면 바꾸지 않는다.
     }
     
+    // 현재 구한 거리를 누적 거리에 더하고 누적 거리를 프리퍼런스에 기록.
+    prefTotalDist += totalDist;
+    //
+    NSUserDefaults* pref = [NSUserDefaults standardUserDefaults];
+    [pref setFloat:prefTotalDist forKey:@"prefTotalDist"];
+    [pref synchronize];
+ 
 
     
     
@@ -207,7 +222,7 @@ int tempError;
 
     if (abs(howRecent) < 15.0)
     {
-        infoTextView.text = [NSString stringWithFormat:@"위도 : %+6f\t경도 : %+6f\n높이 : %6.2f\t\t최고속 : %6.2fkm/h\n속도 : %6.2fm/s\t속도 : %6.2fkm/h\n총이동거리 : %08.3fkm\n총이동거리2 : %08.3fkm\n오차 : %dm\t\t\t오류 빈도 : %d\n필터 : %f",
+        infoTextView.text = [NSString stringWithFormat:@"위도 : %+6f\t경도 : %+6f\n높이 : %6.2f\t\t최고속 : %6.2fkm/h\n속도 : %6.2fm/s\t속도 : %6.2fkm/h\n이동거리 : %08.3fkm\n이동거리2 : %08.3fkm\n누적이동거리 : %010.3fkm\n오차 : %dm\t\t\t오류 빈도 : %d\n필터 : %f",
                              newLocation.coordinate.latitude,//위도
                              newLocation.coordinate.longitude,//경도
                              newLocation.altitude, //tempAltitude
@@ -216,6 +231,7 @@ int tempError;
                              tempSpeed,
                              totalDist/1000,
                              totalDist2/1000,
+                             prefTotalDist,
                              abs(totalDist2-totalDist),
                              tempError,
                              self.locationManager.distanceFilter];

@@ -12,6 +12,7 @@
 
 @interface SecondViewController : UIViewController 
 
+- (IBAction)myPrefTotalDistResetButton:(id)sender;
 
 
 @end

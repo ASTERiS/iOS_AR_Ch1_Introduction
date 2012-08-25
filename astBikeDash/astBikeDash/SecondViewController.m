@@ -17,6 +17,7 @@
 
 
 
+
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
@@ -36,6 +37,7 @@
 
 - (void)viewDidUnload
 {
+
     [super viewDidUnload];
     // Release any retained subviews of the main view.
 }
@@ -45,5 +47,14 @@
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
 {
     return (interfaceOrientation != UIInterfaceOrientationPortraitUpsideDown);
+}
+
+- (IBAction)myPrefTotalDistResetButton:(id)sender {
+    NSUserDefaults* pref = [NSUserDefaults standardUserDefaults];
+        float prefTotalDist = 0.0f;
+        [pref setFloat:prefTotalDist forKey:@"prefTotalDist"];
+        [pref synchronize];
+    
+    // 노티피케이션으로 바로 값을 바꿀 필요가 있음. 
 }
 @end
