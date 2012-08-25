@@ -37,6 +37,7 @@
 @property (weak, nonatomic) IBOutlet UILabel *dateView;
 @property (weak, nonatomic) IBOutlet UILabel *infoSpeedView2;
 
+- (IBAction)tempReset;
 
 
 -(void)startLocationInit; // 위치정보 취득 초기화

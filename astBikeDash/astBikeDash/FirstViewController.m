@@ -160,7 +160,7 @@ int tempError;
     }
     
     // 현재 구한 거리를 누적 거리에 더하고 누적 거리를 프리퍼런스에 기록.
-    prefTotalDist += totalDist;
+    prefTotalDist += totalDist2;
     //
     NSUserDefaults* pref = [NSUserDefaults standardUserDefaults];
     [pref setFloat:prefTotalDist forKey:@"prefTotalDist"];
@@ -274,6 +274,14 @@ int tempError;
 
 // 위치정보 취득 초기화
 
+
+- (IBAction)tempReset {
+    NSUserDefaults* pref = [NSUserDefaults standardUserDefaults];
+    prefTotalDist = 0.0f;
+    [pref setFloat:prefTotalDist forKey:@"prefTotalDist"];
+    [pref synchronize];
+    
+}
 
 -(void)startLocationInit
 {
