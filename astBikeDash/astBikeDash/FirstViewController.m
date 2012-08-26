@@ -155,17 +155,19 @@ int tempError;
             }
             CLLocationDistance dist2 = [newLocation distanceFromLocation:tempOldLocation];
             totalDist2 += abs(dist2);
+            
+            // 현재 구한 거리를 누적 거리에 더하고 누적 거리를 프리퍼런스에 기록.
+            prefTotalDist += abs(dist2);
+            //
+            NSUserDefaults* pref = [NSUserDefaults standardUserDefaults];
+            [pref setFloat:prefTotalDist forKey:@"prefTotalDist"];
+            [pref synchronize];
+            
+
         }
             tempOldLocation = newLocation; //현재 위치를 과거 위치로 기록 & 속도 측정할 수 없으면 바꾸지 않는다.
     }
     
-    // 현재 구한 거리를 누적 거리에 더하고 누적 거리를 프리퍼런스에 기록.
-    prefTotalDist += totalDist2;
-    //
-    NSUserDefaults* pref = [NSUserDefaults standardUserDefaults];
-    [pref setFloat:prefTotalDist forKey:@"prefTotalDist"];
-    [pref synchronize];
- 
 
     
     

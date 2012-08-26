@@ -13,6 +13,7 @@
 @interface SecondViewController : UIViewController 
 
 - (IBAction)myPrefTotalDistResetButton:(id)sender;
+@property (weak, nonatomic) IBOutlet UILabel *myPrefLabel;
 
 
 @end

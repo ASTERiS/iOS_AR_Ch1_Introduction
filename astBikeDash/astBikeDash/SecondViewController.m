@@ -14,6 +14,7 @@
 @end
 
 @implementation SecondViewController
+@synthesize myPrefLabel;
 
 
 
@@ -38,6 +39,7 @@
 - (void)viewDidUnload
 {
 
+    [self setMyPrefLabel:nil];
     [super viewDidUnload];
     // Release any retained subviews of the main view.
 }
@@ -51,9 +53,13 @@
 
 - (IBAction)myPrefTotalDistResetButton:(id)sender {
     NSUserDefaults* pref = [NSUserDefaults standardUserDefaults];
+    myPrefLabel.text =[NSString stringWithFormat:@"%10.2f",[pref floatForKey:@"prefTotalDist"]];
+
+/*
         float prefTotalDist = 0.0f;
         [pref setFloat:prefTotalDist forKey:@"prefTotalDist"];
         [pref synchronize];
+*/
     
     // 노티피케이션으로 바로 값을 바꿀 필요가 있음. 
 }
