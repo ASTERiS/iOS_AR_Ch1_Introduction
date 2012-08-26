@@ -24,6 +24,7 @@
     NSCalendar*         calendar;
     NSDateComponents*   comps;
     CLLocation*         tempOldLocation;
+    CLLocation*         tempOldLocation2;
 
     
 }

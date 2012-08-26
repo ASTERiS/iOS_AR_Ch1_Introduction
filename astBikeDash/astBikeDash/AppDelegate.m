@@ -48,9 +48,9 @@
     if ([CLLocationManager significantLocationChangeMonitoringAvailable]) {
 		// Stop normal location updates and start significant location change updates for battery efficiency.
         NSLog(@"1.%@",firstViewController.locationManager);
-        [firstViewController.locationManager stopUpdatingLocation];
+//        [firstViewController.locationManager stopUpdatingLocation];
         NSLog(@"백그라운드 진입");
-		[firstViewController.locationManager startMonitoringSignificantLocationChanges];
+//		[firstViewController.locationManager startMonitoringSignificantLocationChanges];
         
         NSLog(@"2.%@",firstViewController.locationManager);
         [[UIApplication sharedApplication] setIdleTimerDisabled:NO]; // 화면 잠김세팅 풀기
@@ -78,9 +78,9 @@
     
     if ([CLLocationManager significantLocationChangeMonitoringAvailable]) {
 		// Stop significant location updates and start normal location updates again since the app is in the forefront.
-		[firstViewController.locationManager stopMonitoringSignificantLocationChanges];
+//		[firstViewController.locationManager stopMonitoringSignificantLocationChanges];
         NSLog(@"활성화");
-		[firstViewController.locationManager startUpdatingLocation];
+//		[firstViewController.locationManager startUpdatingLocation];
         [[UIApplication sharedApplication] setIdleTimerDisabled:YES]; // 화면 잠김으로 들어가지 않게 함.
 	}
 	else {

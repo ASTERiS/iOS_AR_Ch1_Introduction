@@ -44,6 +44,7 @@ int tempError;
     totalDist = 0.0f;    // 변수 초기화
     totalDist2 = 0.0f;    // 변수 초기화
     tempOldLocation = nil; //임시 과거 위치 기억 변수 초기화
+    tempOldLocation2 = nil; //임시 과거 위치 기억 변수 초기화
     tempError = 0;
     
     [self startLocationInit];    // 위치정보 초기화 호출
@@ -122,6 +123,9 @@ int tempError;
     // 날짜 표시
     dateView.text = [NSString stringWithFormat:@"%02d.%02d.    %02d:%02d.%02d ",comps.month,comps.day,comps.hour,comps.minute,comps.second];
     
+    
+
+    
 }
 
 #pragma mark GPS_Delegate
@@ -135,12 +139,13 @@ int tempError;
     
     //속도?
     tempSpeed = [newLocation speed]*3.6; // m/s를 km/h로 바꾸기 (60*60)/1000
-
+/*
     // 거리정보 취득 #1 델리게이트 호출 시 자동 계산 된 거리 계산.
     CLLocationDistance dist = [newLocation distanceFromLocation:oldLocation];
     if (!(tempSpeed<=0.0)) { // 속도 측정할 수 없으면 거리 합산 하지 않는다.
         totalDist += abs(dist);
     }
+*/
     
     // 거리정보 취득 #2 기존 마지막 위치를 기준으로 새 거리 계산법
     
@@ -300,7 +305,8 @@ int tempError;
 		// Stop significant location updates and start normal location updates again since the app is in the forefront.
 		[self.locationManager stopMonitoringSignificantLocationChanges];
         NSLog(@"주요 위치변화 정보 모니터링 기능 OFF");
-		[self.locationManager startUpdatingLocation];
+//		[self.locationManager startUpdatingLocation];
+   		[self.locationManager startMonitoringSignificantLocationChanges];
 	}
 	else
     {
