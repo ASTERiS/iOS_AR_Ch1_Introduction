@@ -21,7 +21,7 @@
 @synthesize gpsSignalView;
 @synthesize locationManager;
 
-int tempError;
+int tempError,tempError2;
 
 // 탭 이름 설정.
 
@@ -45,7 +45,9 @@ int tempError;
     totalDist2 = 0.0f;    // 변수 초기화
     tempOldLocation = nil; //임시 과거 위치 기억 변수 초기화
     tempOldLocation2 = nil; //임시 과거 위치 기억 변수 초기화
+    tempNewLocation2 = nil;
     tempError = 0;
+    tempError2 = 0;
     
     [self startLocationInit];    // 위치정보 초기화 호출
 
@@ -123,7 +125,7 @@ int tempError;
     // 날짜 표시
     dateView.text = [NSString stringWithFormat:@"%02d.%02d.    %02d:%02d.%02d ",comps.month,comps.day,comps.hour,comps.minute,comps.second];
     
-    
+
 
     
 }
@@ -135,17 +137,39 @@ int tempError;
 -(void)locationManager:(CLLocationManager *)manager didUpdateToLocation:(CLLocation *)newLocation fromLocation:(CLLocation *)oldLocation
 {
     NSLog(@"델리게이트 호출#1");
-
+    tempError2++;
+    tempNewLocation2=newLocation;
     
     //속도?
     tempSpeed = [newLocation speed]*3.6; // m/s를 km/h로 바꾸기 (60*60)/1000
-/*
+
     // 거리정보 취득 #1 델리게이트 호출 시 자동 계산 된 거리 계산.
+/*
     CLLocationDistance dist = [newLocation distanceFromLocation:oldLocation];
     if (!(tempSpeed<=0.0)) { // 속도 측정할 수 없으면 거리 합산 하지 않는다.
         totalDist += abs(dist);
     }
 */
+    if(!(tempSpeed<0.0)){ //속도 측정할 수 없으면 거리 합산하지 않는다.
+        NSLog(@"--------");
+        NSLog(@"tempSpeed:%f",tempSpeed);
+        if (tempOldLocation!=nil){ // 초기 위치값을 얻기 전까지는 더하지 않는다.
+            /*
+             if (!(oldLocation==tempOldLocation)) { //위치정보 차이 몇번이나 발생했나?
+             NSLog(@"NEW    Location:%@",newLocation);
+             NSLog(@"tempOldLocation:%@",tempOldLocation);
+             tempError++;  //에러발생 빈도 분자
+             }
+             */
+            CLLocationDistance dist = [newLocation distanceFromLocation:tempOldLocation];
+            totalDist += abs(dist);
+            
+            
+            
+        }
+        tempOldLocation = newLocation; //현재 위치를 과거 위치로 기록 & 속도 측정할 수 없으면 바꾸지 않는다.
+    }
+
     
     // 거리정보 취득 #2 기존 마지막 위치를 기준으로 새 거리 계산법
     
@@ -153,11 +177,13 @@ int tempError;
         NSLog(@"--------");
         NSLog(@"tempSpeed:%f",tempSpeed);
         if (tempOldLocation!=nil){ // 초기 위치값을 얻기 전까지는 더하지 않는다.
-            NSLog(@"NEW    Location:%@",newLocation);
-            NSLog(@"tempOldLocation:%@",tempOldLocation);
+/*
             if (!(oldLocation==tempOldLocation)) { //위치정보 차이 몇번이나 발생했나?
-                tempError++;
+                NSLog(@"NEW    Location:%@",newLocation);
+                NSLog(@"tempOldLocation:%@",tempOldLocation);
+                tempError++;  //에러발생 빈도 분자
             }
+*/
             CLLocationDistance dist2 = [newLocation distanceFromLocation:tempOldLocation];
             totalDist2 += abs(dist2);
             
@@ -229,7 +255,7 @@ int tempError;
 
     if (abs(howRecent) < 15.0)
     {
-        infoTextView.text = [NSString stringWithFormat:@"위도 : %+6f\t경도 : %+6f\n높이 : %6.2f\t\t최고속 : %6.2fkm/h\n속도 : %6.2fm/s\t속도 : %6.2fkm/h\n이동거리 : %08.3fkm\n이동거리2 : %08.3fkm\n누적이동거리 : %010.3fkm\n오차 : %dm\t\t\t오류 빈도 : %d\n필터 : %f",
+        infoTextView.text = [NSString stringWithFormat:@"위도 : %+6f\t경도 : %+6f\n높이 : %6.2f\t\t최고속 : %6.2fkm/h\n속도 : %6.2fm/s\t속도 : %6.2fkm/h\n이동거리 : %08.3fkm\n이동거리2 : %08.3fkm\n누적이동거리 : %010.3fkm\n오차 : %dm\t빈도 :%d\n필터 : %f",
                              newLocation.coordinate.latitude,//위도
                              newLocation.coordinate.longitude,//경도
                              newLocation.altitude, //tempAltitude
@@ -240,7 +266,7 @@ int tempError;
                              totalDist2/1000,
                              prefTotalDist,
                              abs(totalDist2-totalDist),
-                             tempError,
+                             tempError2,
                              self.locationManager.distanceFilter];
        
     }
@@ -275,7 +301,7 @@ int tempError;
                                              cancelButtonTitle:@"OK"
                                              otherButtonTitles:nil, nil];
         [alert show];
-        NSLog(@"위치정보 취득 실패");
+        NSLog(@"위치정보 취득 실패:%@",error);
     }
 }
 
@@ -305,8 +331,8 @@ int tempError;
 		// Stop significant location updates and start normal location updates again since the app is in the forefront.
 		[self.locationManager stopMonitoringSignificantLocationChanges];
         NSLog(@"주요 위치변화 정보 모니터링 기능 OFF");
-//		[self.locationManager startUpdatingLocation];
-   		[self.locationManager startMonitoringSignificantLocationChanges];
+		[self.locationManager startUpdatingLocation];
+//   		[self.locationManager startMonitoringSignificantLocationChanges];
 	}
 	else
     {
