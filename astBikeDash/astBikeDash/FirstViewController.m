@@ -18,6 +18,7 @@
 @synthesize dateView;
 @synthesize infoSpeedView2;
 @synthesize myArrayLabel;
+@synthesize secTotalDistLabel;
 @synthesize infoTextView;
 @synthesize gpsSignalView;
 @synthesize locationManager;
@@ -50,7 +51,18 @@ int tempError,tempError2;
     tempError = 0;
     tempError2 = 0;
     
+    // 초분할 거리용 초기화
+    secNewLocation=secOldLocation = nil;
+    secTotalDist = 0.0f;
+    secNum = 0;
+    //첫실행 확인용 변수
+    myFirstRun = 0;
+    
+
+    
+    
     [self startLocationInit];    // 위치정보 초기화 호출
+    
 
     //타이머 생성
     [NSTimer scheduledTimerWithTimeInterval:0.2f
@@ -58,15 +70,10 @@ int tempError,tempError2;
                                    selector:@selector(onTick:)
                                    userInfo:nil
                                     repeats:YES];
-    
-    [NSTimer scheduledTimerWithTimeInterval:1.0f
-                                     target:self
-                                   selector:@selector(onTick2:)
-                                   userInfo:nil
-                                    repeats:YES];
+
     
     //프리퍼런스 누적 거리 준비 만약 없다면 0을 기록하고 아니라면 패스
-    NSUserDefaults* pref = [NSUserDefaults standardUserDefaults];
+    pref = [NSUserDefaults standardUserDefaults];
     if (!([pref floatForKey:@"prefTotalDist"])) { // 값이 없으면 여기 실행
         prefTotalDist = 0.0f;
         [pref setFloat:prefTotalDist forKey:@"prefTotalDist"];
@@ -75,9 +82,13 @@ int tempError,tempError2;
          prefTotalDist = [pref floatForKey:@"prefTotalDist"];
     }
     //NSdictionary
-    myArray =[NSMutableArray array];
-    [myArray addObject:@"start"];// 배열에 기록
-
+    secLocationArray =[NSMutableArray array];
+    [secLocationArray addObject:@"start-location"];// 배열에 기록
+    secDistanceArray =[NSMutableArray array];
+    [secDistanceArray addObject:@"start-distance"];// 배열에 기록
+    
+ 
+    
 }
 
 - (void)viewDidUnload
@@ -89,6 +100,7 @@ int tempError,tempError2;
     [self setDateView:nil];
     [self setInfoSpeedView2:nil];
     [self setMyArrayLabel:nil];
+    [self setSecTotalDistLabel:nil];
     [super viewDidUnload];
     // Release any retained subviews of the main view.
     
@@ -107,17 +119,85 @@ int tempError,tempError2;
 //정기처리
 -(void)onTick:(NSTimer*)timer
 {
+
     
+    NSLog(@"secNum:%d",secNum);
+    if (secNum ==4) // 5번째 (0.2*5 1초)일 때 거리정보 계산을 추가로 실행함.
+    {
+ 
+        
+        // 프리퍼런스 값에서 읽어 전역변수에 대입
+        
+//        NSUserDefaults* pref = [NSUserDefaults standardUserDefaults];
+        //총 누적 거리 갱신
+        prefTotalDist = [pref floatForKey:@"prefTotalDist"];
+        //필터값 갱신 및 적용
+//        self.locationManager.distanceFilter =[pref floatForKey:@"prefFilter"];
+        
+        
+        
+        
+        // 거리 계산
+        
+        if (secOldLocation==nil) // 첫실행으로 값이 없을 때의 초기화
+        {
+            secOldLocation = secNewLocation;
+            [secDistanceArray addObject:@"0"];
+            return;
+        }
+        
+                
+        [secLocationArray addObject:secNewLocation];// 위치 배열에 기록
+        NSLog(@"위치정보 %@",secNewLocation);
+        
+        
+        CLLocationDistance  secDist = [secNewLocation distanceFromLocation:secOldLocation]; // 거리 변화값 획득.
+        if (secNewLocation.speed<0.0f||secNewLocation.horizontalAccuracy<0.0f) { // 만약 이동 속도를 구할 수 없다면 secDist(변화값)을 0으로 한다. -> 필터로 구현는 게 나을까?
+            NSLog(@"horizontalAccuracy:%f",secNewLocation.horizontalAccuracy);
+            secDist = 0.0f;
+        }
+        
+        
+        int tempIdx = [secDistanceArray count];  // 총 어레이 인덱스 값 구하기.
+        NSLog(@"tempIdx %d",tempIdx);
+        myArrayLabel.text=[NSString stringWithFormat:@"%d",tempIdx];
+        
+        NSString* secTempDist = [secDistanceArray objectAtIndex:tempIdx-1]; // 거리 배열의 이전값 (이전까지의 전체 거리)를 불러옴
+        NSLog(@"secTempDist : %@",secTempDist);
+        
+        double secTempDistDouble = [secTempDist doubleValue]; // 배열값을 double형으로 형변환
+        
+        NSLog(@"secTempDistDouble : %f",secTempDistDouble);
+        
+        secTotalDist = secDist + secTempDistDouble; // 기존 거리값과 변화값을 더해줌
+        
+        secTotalDistLabel.text= [NSString stringWithFormat:@"이동거리 : %010.3f",secTotalDist/1000]; // 레이블에 표시
+        NSLog(@"secTotalDist %f", secTotalDist);
+        
+        NSString* str = [NSString stringWithFormat:@"%f",secTotalDist];
+        [secDistanceArray addObject:str];// 거리 배열에 현 누적거리 기록
+        secOldLocation = secNewLocation; // 현제 위치정보를 이전 위치 정보로 기록함
+        
+ 
+
+        secNum = 0; // 타이머 0.2초 단위 계산 초기화 
+    }
+    
+ 
     // 속도 처리
     // 최고 속도 저장
+    
     if (tempSpeed>=maxSpeed){
         maxSpeed = tempSpeed;
     }
-        
+    
+    
+
+    
     // 측정값 없을 때의 처리
     float tempSpeed3 = (tempSpeed+lastSpeed)/2;
     lastSpeed=tempSpeed3;
-    if (tempSpeed<=0) {
+    if (tempSpeed<=0.0f) {
         tempSpeed3 = 0.0f;   // 측정할 수 없을 땐 0 표시
     }
     
@@ -129,27 +209,16 @@ int tempError,tempError2;
     
     //날짜 처리
     //날짜 콤포넌트 취득
-    unsigned int unitFlag= NSYearCalendarUnit|NSMonthCalendarUnit|NSDayCalendarUnit|NSHourCalendarUnit|NSMinuteCalendarUnit|NSSecondCalendarUnit;
-    comps=[calendar components:unitFlag fromDate:[NSDate date]];
+        unsigned int unitFlag= NSYearCalendarUnit|NSMonthCalendarUnit|NSDayCalendarUnit|NSHourCalendarUnit|NSMinuteCalendarUnit|NSSecondCalendarUnit;
+        comps=[calendar components:unitFlag fromDate:[NSDate date]];
+        
     // 날짜 표시
     dateView.text = [NSString stringWithFormat:@"%02d.%02d.    %02d:%02d.%02d ",comps.month,comps.day,comps.hour,comps.minute,comps.second];
-    
 
+        
+        secNum++; // 타이머 0.2초 단위 계산용 누적값. (0~3까지 else밑단 실행, 4에서 
 
-    
-}
-
-// 1초마다 불리는 것 - 일단 프리퍼런스 리프레쉬용으로 쓴다.
-
--(void)onTick2:(NSTimer*)timer
-{
-        NSUserDefaults* pref = [NSUserDefaults standardUserDefaults];
-    //총 누적 거리 갱신
-             prefTotalDist = [pref floatForKey:@"prefTotalDist"];
-    //필터값
-            self.locationManager.distanceFilter =[pref floatForKey:@"prefFilter"];
-    
-    
+   
 }
 
 
@@ -160,49 +229,27 @@ int tempError,tempError2;
 -(void)locationManager:(CLLocationManager *)manager didUpdateToLocation:(CLLocation *)newLocation fromLocation:(CLLocation *)oldLocation
 {
     
+    
+
     // 델리게이트 정보 취득 후 시간 흐름 체크
     NSDate* eventDate = newLocation.timestamp;
     NSTimeInterval howRecent = [eventDate timeIntervalSinceNow];
     
-
+    secNewLocation = newLocation;
     
-
+    
+    
     //
     NSLog(@"델리게이트 호출#1");
     tempError2++;
-    tempNewLocation2=newLocation.coordinate.latitude *100 +newLocation.coordinate.longitude;
+    tempNewLocation2=newLocation.coordinate.latitude *100.0f +newLocation.coordinate.longitude;
     
     //속도?
-    tempSpeed = [newLocation speed]*3.6; // m/s를 km/h로 바꾸기 (60*60)/1000
-
-    // 거리정보 취득 #1 델리게이트 호출 시 자동 계산 된 거리 계산.
-/*
-    CLLocationDistance dist = [newLocation distanceFromLocation:oldLocation];
-    if (!(tempSpeed<=0.0)) { // 속도 측정할 수 없으면 거리 합산 하지 않는다.
-        totalDist += abs(dist);
-    }
-*/
-    NSLog(@"위치값변화 체크2 %f",tempNewLocation2);
-    NSLog(@"위치값변화 체크3 %f",tempOldLocation3);
-
-    NSLog(@"위치값변화 체크 %f",tempNewLocation2 - tempOldLocation3);
- /*
-    if ((tempNewLocation2 - tempOldLocation3)!=0.000000) { // 위도값 변하면 동작
-            NSLog(@"--------%f",tempNewLocation2);
-            NSLog(@"거리 1");
-            if (tempOldLocation!=nil){ // 초기 위치값을 얻기 전까지는 더하지 않는다.
-                CLLocationDistance dist = [newLocation distanceFromLocation:tempOldLocation];
-                totalDist += abs(dist);
-
-        }
-    }
-  */
+    tempSpeed = [newLocation speed]*3.6f; // m/s를 km/h로 바꾸기 (60*60)/1000
 
     
-    // 거리정보 취득 #2 기존 마지막 위치를 기준으로 새 거리 계산법
-    
-//    if(!(tempSpeed<=0.0)){ //속도 측정할 수 없거나 0이면 거리 합산하지 않는다.
-    if ((tempNewLocation2 - tempOldLocation3)!=0.000000) { // 위도값 변하면 동작
+    if(!(tempSpeed<=0.0f)){ //속도 측정할 수 없거나 0이면 거리 합산하지 않는다.
+//    if ((tempNewLocation2 - tempOldLocation3)!=0.000000) { // 위도값 변하면 동작
         NSLog(@"--------");
         NSLog(@"tempSpeed:%f",tempSpeed);
         if (tempOldLocation!=nil){ // 초기 위치값을 얻기 전까지는 더하지 않는다.
@@ -219,84 +266,59 @@ int tempError,tempError2;
             // 현재 구한 거리를 누적 거리에 더하고 누적 거리를 프리퍼런스에 기록.
             prefTotalDist += abs(dist2);
             //
-            NSUserDefaults* pref = [NSUserDefaults standardUserDefaults];
+//            NSUserDefaults* pref = [NSUserDefaults standardUserDefaults];
             [pref setFloat:prefTotalDist forKey:@"prefTotalDist"];
             [pref synchronize];
             
 
         }
             tempOldLocation = newLocation; //현재 위치를 과거 위치로 기록 & 속도 측정할 수 없으면 바꾸지 않는다.
-            tempOldLocation3 = newLocation.coordinate.latitude *100 +newLocation.coordinate.longitude;
-            [myArray addObject:newLocation];// 배열에 기록
-        int tempArrayIndex = [myArray count];
-        myArrayLabel.text =[NSString stringWithFormat:@"%d",tempArrayIndex];
-        NSLog(@"어레이 %u",tempArrayIndex);
-        NSLog(@"어레이취득 %@",[myArray objectAtIndex:tempArrayIndex-1]);
-    }
-    
+            tempOldLocation3 = newLocation.coordinate.latitude *100.0f +newLocation.coordinate.longitude;
 
-    
-    
-    
-    
-    // 높이정보 사용가능여부 확인
-    //높이용임시 변수
-    /*
-    double tempAltitude;
-    
-    if (signbit(newLocation.verticalAccuracy)) {
-        NSLog(@"높이정보 사용가능");
-        tempAltitude = newLocation.altitude;
-        
-    } else {
-        NSLog(@"높이정보 사용불능");
-        tempAltitude = 0.0f;
-        
     }
-   */
+    
 
     
     // GPS 신호 정확성 체크
     
-    if (newLocation.horizontalAccuracy < 0.0)
+    if (newLocation.horizontalAccuracy < 0.0f)
     {
         gpsSignalView.text =[NSString stringWithFormat:@"No Signal : %6.2f",newLocation.horizontalAccuracy];
-        gpsProgressView.progress = 0.0; // 그래프를 걍 0으로 처리.
+        gpsProgressView.progress = 0.0f; // 그래프를 걍 0으로 처리.
     }
-    else if (newLocation.horizontalAccuracy > 163.0)
+    else if (newLocation.horizontalAccuracy > 163.0f)
     {
         gpsSignalView.text =[NSString stringWithFormat:@"poor Signal : %6.2f",newLocation.horizontalAccuracy];
              // Poor Signal
-            gpsProgressView.progress = (2-pow(1.004,newLocation.horizontalAccuracy-5.0));
+            gpsProgressView.progress = (2.0f-pow(1.004f,newLocation.horizontalAccuracy-5.0f));
             //5일 때 1, 대략 160근처에서 0이 나오는 지수함수.
     }
-    else if (newLocation.horizontalAccuracy > 48.0)
+    else if (newLocation.horizontalAccuracy > 48.0f)
     {
         gpsSignalView.text =[NSString stringWithFormat:@"Average Signal : %6.2f",newLocation.horizontalAccuracy]; // Average Signal
-            gpsProgressView.progress = (2-pow(1.004,newLocation.horizontalAccuracy-5.0));
+            gpsProgressView.progress = (2.0f-pow(1.004f,newLocation.horizontalAccuracy-5.0f));
     }
     else
     {
         gpsSignalView.text =[NSString stringWithFormat:@"Full Signal : %6.2f",newLocation.horizontalAccuracy];// Full Signal
         if (newLocation.horizontalAccuracy<=5) {
-            gpsProgressView.progress = 1.0; //최대값은 5인듯하나 그보다 정확한 값이 나올 땐 그래프를 1로 처리.
+            gpsProgressView.progress = 1.0f; //최대값은 5인듯하나 그보다 정확한 값이 나올 땐 그래프를 1로 처리.
         }
-            gpsProgressView.progress = (2-pow(1.004,newLocation.horizontalAccuracy-5.0));
+            gpsProgressView.progress = (2.0f-pow(1.004f,newLocation.horizontalAccuracy-5.0f));
     }
     
     // 정보 표시 (정보 갱신 있는지 확인)
 
 
-    if (abs(howRecent) < 15.0)
+    if (abs(howRecent) < 15.0f)
     {
-        infoTextView.text = [NSString stringWithFormat:@"위도 : %+6f\t경도 : %+6f\n높이 : %6.2f\t\t최고속 : %6.2fkm/h\n속도 : %6.2fm/s\t속도 : %6.2fkm/h\n이동거리 : %08.3fkm\n이동거리2 : %08.3fkm\n누적이동거리 : %010.3fkm\n오차 : %dm\t빈도 :%d\n필터 : %f",
+        infoTextView.text = [NSString stringWithFormat:@"위도 : %+6f\t경도 : %+6f\n높이 : %6.2f\t\t최고속 : %6.2fkm/h\n속도 : %6.2fm/s\t속도 : %6.2fkm/h\n이동거리2 : %08.3fkm\n누적이동거리 : %010.3fkm\n오차 : %dm\t빈도 :%d\n필터 : %f",
                              newLocation.coordinate.latitude,//위도
                              newLocation.coordinate.longitude,//경도
                              newLocation.altitude, //tempAltitude
                              maxSpeed,
                              newLocation.speed,//속도
                              tempSpeed,
-                             totalDist/1000,
                              totalDist2/1000,
                              prefTotalDist,
                              abs(totalDist2-totalDist),
@@ -313,6 +335,7 @@ int tempError,tempError2;
     
 }
 
+#pragma mark Compass
 
 // 방위정보 혼란시 교정용 화면 출력 <----???????? 동작 안 하는듯?????
 
@@ -322,6 +345,8 @@ int tempError,tempError2;
     return YES;
 }
 
+
+#pragma mark GPS initialize
 
 // 위치정보 취득에 관련된 허가 유무
 
@@ -340,7 +365,7 @@ int tempError,tempError2;
         NSLog(@"위치정보취득은 허가되어있지 않음");
     }
     else
-    {
+    { // 이 부분은 얼럿창이 아니라 다른 것으로 바꿔야할지도? ----------------------------------------------------------------------------
         UIAlertView* alert = [[UIAlertView alloc]initWithTitle:@""
                                                        message:@"위치정보 취득 실패."
                                                       delegate:self
@@ -363,7 +388,7 @@ int tempError,tempError2;
     self.locationManager.delegate=self;
     self.locationManager.desiredAccuracy = kCLLocationAccuracyBest;
 //    self.locationManager.distanceFilter = kCLDistanceFilterNone;               // 필터?
-    self.locationManager.distanceFilter = 1;               // 필터? (미터단위)
+    self.locationManager.distanceFilter = 1.0f;               // 필터? (미터단위)
 
     
     // 혹시 이전 주요 위치변화 정보 모니터링 기능이 켜져있다면 끄고 시작한다.
@@ -384,17 +409,10 @@ int tempError,tempError2;
     comps = nil;
     // 오브젝트 대입
     calendar = [[NSCalendar alloc]initWithCalendarIdentifier:NSGregorianCalendar];
+   
 
 }
 
--(void)setFilter:(int)tempFilter
-{
-        self.locationManager.distanceFilter = tempFilter;
-}
-
-
-//파일 입출력관련
-// 문자열 바이트 배열 변환
 
 
 

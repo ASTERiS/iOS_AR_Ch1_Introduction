@@ -29,6 +29,20 @@
     double        tempOldLocation3;
     double        tempNewLocation2;
     NSMutableArray* myArray;
+    // 첫실행 확인
+    int                 myFirstRun;
+    NSTimeInterval      appTimer;
+    // 초분할 관련
+    int                 secNum; // 0.2초 단위 계산용.
+    CLLocation*         secNewLocation;// 지금 위치를 기록
+    CLLocation*         secOldLocation;// 이전 위치를 기록
+    NSMutableArray*     secLocationArray; // 위치 저장용 배열
+    NSMutableArray*     secDistanceArray; // 거리 저장용 배열
+    double              secTotalDist; // 총거리
+
+    
+    NSUserDefaults*     pref; // 프리퍼런스 억세스용
+    
 }
 
 
@@ -41,11 +55,11 @@
 @property (weak, nonatomic) IBOutlet UILabel *infoSpeedView2;
 
 @property (weak, nonatomic) IBOutlet UILabel *myArrayLabel;
+@property (strong, nonatomic) IBOutlet UILabel *secTotalDistLabel;
 
 
 
 -(void)startLocationInit; // 위치정보 취득 초기화
--(void)setFilter:(int)tempFilter;
 
 
 
