@@ -17,6 +17,7 @@
 @synthesize infoSpeedView;
 @synthesize dateView;
 @synthesize infoSpeedView2;
+@synthesize myArrayLabel;
 @synthesize infoTextView;
 @synthesize gpsSignalView;
 @synthesize locationManager;
@@ -45,7 +46,7 @@ int tempError,tempError2;
     totalDist2 = 0.0f;    // 변수 초기화
     tempOldLocation = nil; //임시 과거 위치 기억 변수 초기화
     tempOldLocation2 = nil; //임시 과거 위치 기억 변수 초기화
-    tempNewLocation2 = nil;
+    tempNewLocation2 = 0.0f;
     tempError = 0;
     tempError2 = 0;
     
@@ -58,6 +59,12 @@ int tempError,tempError2;
                                    userInfo:nil
                                     repeats:YES];
     
+    [NSTimer scheduledTimerWithTimeInterval:1.0f
+                                     target:self
+                                   selector:@selector(onTick2:)
+                                   userInfo:nil
+                                    repeats:YES];
+    
     //프리퍼런스 누적 거리 준비 만약 없다면 0을 기록하고 아니라면 패스
     NSUserDefaults* pref = [NSUserDefaults standardUserDefaults];
     if (!([pref floatForKey:@"prefTotalDist"])) { // 값이 없으면 여기 실행
@@ -67,8 +74,9 @@ int tempError,tempError2;
     }else{ //값이 있으면 읽기.
          prefTotalDist = [pref floatForKey:@"prefTotalDist"];
     }
-    
-    
+    //NSdictionary
+    myArray =[NSMutableArray array];
+    [myArray addObject:@"start"];// 배열에 기록
 
 }
 
@@ -80,6 +88,7 @@ int tempError,tempError2;
     [self setInfoSpeedView:nil];
     [self setDateView:nil];
     [self setInfoSpeedView2:nil];
+    [self setMyArrayLabel:nil];
     [super viewDidUnload];
     // Release any retained subviews of the main view.
     
@@ -130,15 +139,38 @@ int tempError,tempError2;
     
 }
 
+// 1초마다 불리는 것 - 일단 프리퍼런스 리프레쉬용으로 쓴다.
+
+-(void)onTick2:(NSTimer*)timer
+{
+        NSUserDefaults* pref = [NSUserDefaults standardUserDefaults];
+    //총 누적 거리 갱신
+             prefTotalDist = [pref floatForKey:@"prefTotalDist"];
+    //필터값
+            self.locationManager.distanceFilter =[pref floatForKey:@"prefFilter"];
+    
+    
+}
+
+
 #pragma mark GPS_Delegate
 
 // 위치정보 델리게이트에 의한 호출
 
 -(void)locationManager:(CLLocationManager *)manager didUpdateToLocation:(CLLocation *)newLocation fromLocation:(CLLocation *)oldLocation
 {
+    
+    // 델리게이트 정보 취득 후 시간 흐름 체크
+    NSDate* eventDate = newLocation.timestamp;
+    NSTimeInterval howRecent = [eventDate timeIntervalSinceNow];
+    
+
+    
+
+    //
     NSLog(@"델리게이트 호출#1");
     tempError2++;
-    tempNewLocation2=newLocation;
+    tempNewLocation2=newLocation.coordinate.latitude *100 +newLocation.coordinate.longitude;
     
     //속도?
     tempSpeed = [newLocation speed]*3.6; // m/s를 km/h로 바꾸기 (60*60)/1000
@@ -150,30 +182,27 @@ int tempError,tempError2;
         totalDist += abs(dist);
     }
 */
-    if(!(tempSpeed<0.0)){ //속도 측정할 수 없으면 거리 합산하지 않는다.
-        NSLog(@"--------");
-        NSLog(@"tempSpeed:%f",tempSpeed);
-        if (tempOldLocation!=nil){ // 초기 위치값을 얻기 전까지는 더하지 않는다.
-            /*
-             if (!(oldLocation==tempOldLocation)) { //위치정보 차이 몇번이나 발생했나?
-             NSLog(@"NEW    Location:%@",newLocation);
-             NSLog(@"tempOldLocation:%@",tempOldLocation);
-             tempError++;  //에러발생 빈도 분자
-             }
-             */
-            CLLocationDistance dist = [newLocation distanceFromLocation:tempOldLocation];
-            totalDist += abs(dist);
-            
-            
-            
+    NSLog(@"위치값변화 체크2 %f",tempNewLocation2);
+    NSLog(@"위치값변화 체크3 %f",tempOldLocation3);
+
+    NSLog(@"위치값변화 체크 %f",tempNewLocation2 - tempOldLocation3);
+ /*
+    if ((tempNewLocation2 - tempOldLocation3)!=0.000000) { // 위도값 변하면 동작
+            NSLog(@"--------%f",tempNewLocation2);
+            NSLog(@"거리 1");
+            if (tempOldLocation!=nil){ // 초기 위치값을 얻기 전까지는 더하지 않는다.
+                CLLocationDistance dist = [newLocation distanceFromLocation:tempOldLocation];
+                totalDist += abs(dist);
+
         }
-        tempOldLocation = newLocation; //현재 위치를 과거 위치로 기록 & 속도 측정할 수 없으면 바꾸지 않는다.
     }
+  */
 
     
     // 거리정보 취득 #2 기존 마지막 위치를 기준으로 새 거리 계산법
     
-    if(!(tempSpeed<=0.0)){ //속도 측정할 수 없으면 거리 합산하지 않는다.
+//    if(!(tempSpeed<=0.0)){ //속도 측정할 수 없거나 0이면 거리 합산하지 않는다.
+    if ((tempNewLocation2 - tempOldLocation3)!=0.000000) { // 위도값 변하면 동작
         NSLog(@"--------");
         NSLog(@"tempSpeed:%f",tempSpeed);
         if (tempOldLocation!=nil){ // 초기 위치값을 얻기 전까지는 더하지 않는다.
@@ -197,6 +226,12 @@ int tempError,tempError2;
 
         }
             tempOldLocation = newLocation; //현재 위치를 과거 위치로 기록 & 속도 측정할 수 없으면 바꾸지 않는다.
+            tempOldLocation3 = newLocation.coordinate.latitude *100 +newLocation.coordinate.longitude;
+            [myArray addObject:newLocation];// 배열에 기록
+        int tempArrayIndex = [myArray count];
+        myArrayLabel.text =[NSString stringWithFormat:@"%d",tempArrayIndex];
+        NSLog(@"어레이 %u",tempArrayIndex);
+        NSLog(@"어레이취득 %@",[myArray objectAtIndex:tempArrayIndex-1]);
     }
     
 
@@ -250,8 +285,7 @@ int tempError,tempError2;
     }
     
     // 정보 표시 (정보 갱신 있는지 확인)
-    NSDate* eventDate = newLocation.timestamp;
-    NSTimeInterval howRecent = [eventDate timeIntervalSinceNow];
+
 
     if (abs(howRecent) < 15.0)
     {
@@ -275,7 +309,19 @@ int tempError,tempError2;
         infoTextView.text =@"Update was old";
     }
     
+
+    
 }
+
+
+// 방위정보 혼란시 교정용 화면 출력 <----???????? 동작 안 하는듯?????
+
+- (BOOL)locationManagerShouldDisplayHeadingCalibration:(CLLocationManager *)manager
+{
+    NSLog(@"방위정보 교란");
+    return YES;
+}
+
 
 // 위치정보 취득에 관련된 허가 유무
 
@@ -308,13 +354,7 @@ int tempError,tempError2;
 // 위치정보 취득 초기화
 
 
-- (IBAction)tempReset {
-    NSUserDefaults* pref = [NSUserDefaults standardUserDefaults];
-    prefTotalDist = 0.0f;
-    [pref setFloat:prefTotalDist forKey:@"prefTotalDist"];
-    [pref synchronize];
-    
-}
+
 
 -(void)startLocationInit
 {
@@ -322,8 +362,8 @@ int tempError,tempError2;
     self.locationManager=[[CLLocationManager alloc]init];
     self.locationManager.delegate=self;
     self.locationManager.desiredAccuracy = kCLLocationAccuracyBest;
-    self.locationManager.distanceFilter = kCLDistanceFilterNone;               // 필터?
-//    self.locationManager.distanceFilter = 10;               // 필터?
+//    self.locationManager.distanceFilter = kCLDistanceFilterNone;               // 필터?
+    self.locationManager.distanceFilter = 1;               // 필터? (미터단위)
 
     
     // 혹시 이전 주요 위치변화 정보 모니터링 기능이 켜져있다면 끄고 시작한다.
@@ -353,8 +393,8 @@ int tempError,tempError2;
 }
 
 
-
-
+//파일 입출력관련
+// 문자열 바이트 배열 변환
 
 
 

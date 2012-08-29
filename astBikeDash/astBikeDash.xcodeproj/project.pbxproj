@@ -112,9 +112,9 @@
 			isa = PBXGroup;
 			children = (
 				84E8DAB115DC96B0005BE68D /* AppDelegate.h */,
+				84E8DAB215DC96B0005BE68D /* AppDelegate.m */,
 				845E449E15E14BAF002B9B83 /* bgm.wav */,
 				845E449F15E14BAF002B9B83 /* se.wav */,
-				84E8DAB215DC96B0005BE68D /* AppDelegate.m */,
 				845E44A315E14D7A002B9B83 /* bgm.mp3 */,
 				845E44A515E14DB6002B9B83 /* test.m4a */,
 				84E8DAB415DC96B0005BE68D /* FirstViewController.h */,

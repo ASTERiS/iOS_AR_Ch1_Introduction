@@ -26,9 +26,9 @@
     NSDateComponents*   comps;
     CLLocation*         tempOldLocation;
     CLLocation*         tempOldLocation2;
-    CLLocation*         tempNewLocation2;
-
-    
+    double        tempOldLocation3;
+    double        tempNewLocation2;
+    NSMutableArray* myArray;
 }
 
 
@@ -40,11 +40,13 @@
 @property (weak, nonatomic) IBOutlet UILabel *dateView;
 @property (weak, nonatomic) IBOutlet UILabel *infoSpeedView2;
 
-- (IBAction)tempReset;
+@property (weak, nonatomic) IBOutlet UILabel *myArrayLabel;
+
 
 
 -(void)startLocationInit; // 위치정보 취득 초기화
 -(void)setFilter:(int)tempFilter;
+
 
 
 
