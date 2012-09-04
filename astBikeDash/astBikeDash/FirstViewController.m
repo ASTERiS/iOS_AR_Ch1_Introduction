@@ -19,6 +19,7 @@
 @synthesize infoSpeedView2;
 @synthesize myArrayLabel;
 @synthesize secTotalDistLabel;
+@synthesize filterLabel;
 @synthesize infoTextView;
 @synthesize gpsSignalView;
 @synthesize locationManager;
@@ -101,6 +102,7 @@ int tempError,tempError2;
     [self setInfoSpeedView2:nil];
     [self setMyArrayLabel:nil];
     [self setSecTotalDistLabel:nil];
+    [self setFilterLabel:nil];
     [super viewDidUnload];
     // Release any retained subviews of the main view.
     
@@ -132,9 +134,23 @@ int tempError,tempError2;
         //총 누적 거리 갱신
         prefTotalDist = [pref floatForKey:@"prefTotalDist"];
         //필터값 갱신 및 적용
-//        self.locationManager.distanceFilter =[pref floatForKey:@"prefFilter"];
-        
-        
+
+        if ([pref floatForKey:@"prefFilter"]==-3.0f) { // 필터 Auto일때 처리 
+            if (secNewLocation.speed<2.5f) {
+                self.locationManager.distanceFilter = kCLDistanceFilterNone;
+                filterLabel.text = @"NONE";
+            }else if (secNewLocation.speed<15.0f) {
+                self.locationManager.distanceFilter = 1;
+                filterLabel.text = @"F:1";
+            }else {
+                self.locationManager.distanceFilter = 10;
+                filterLabel.text = @"F10";
+            }
+            
+        }else{
+        self.locationManager.distanceFilter =[pref floatForKey:@"prefFilter"];
+            filterLabel.text = @"MAN.";
+        }
         
         
         // 거리 계산
@@ -387,8 +403,8 @@ int tempError,tempError2;
     self.locationManager=[[CLLocationManager alloc]init];
     self.locationManager.delegate=self;
     self.locationManager.desiredAccuracy = kCLLocationAccuracyBest;
-//    self.locationManager.distanceFilter = kCLDistanceFilterNone;               // 필터?
-    self.locationManager.distanceFilter = 1.0f;               // 필터? (미터단위)
+    self.locationManager.distanceFilter = kCLDistanceFilterNone;               // 필터?
+//    self.locationManager.distanceFilter = 1.0f;               // 필터? (미터단위)
 
     
     // 혹시 이전 주요 위치변화 정보 모니터링 기능이 켜져있다면 끄고 시작한다.

@@ -56,6 +56,7 @@
 
 @property (weak, nonatomic) IBOutlet UILabel *myArrayLabel;
 @property (strong, nonatomic) IBOutlet UILabel *secTotalDistLabel;
+@property (strong, nonatomic) IBOutlet UILabel *filterLabel;
 
 
 

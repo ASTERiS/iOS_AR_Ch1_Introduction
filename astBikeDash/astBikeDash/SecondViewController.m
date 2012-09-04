@@ -89,7 +89,7 @@ enum filterButtonTag {
             break;
         case FILTER_100:
             
-            [pref setFloat:100.0f forKey:@"prefFilter"];
+            [pref setFloat:-3.0f forKey:@"prefFilter"];
             [pref synchronize];
             break;
 
