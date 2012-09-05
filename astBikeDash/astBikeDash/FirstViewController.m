@@ -122,7 +122,7 @@ int tempError,tempError2;
 -(void)onTick:(NSTimer*)timer
 {
 
-    
+ #pragma mark 1sec_part       
     NSLog(@"secNum:%d",secNum);
     if (secNum ==4) // 5번째 (0.2*5 1초)일 때 거리정보 계산을 추가로 실행함.
     {
@@ -196,6 +196,16 @@ int tempError,tempError2;
         [secDistanceArray addObject:str];// 거리 배열에 현 누적거리 기록
         
         
+        
+        // 현재 구한 거리를 누적 거리에 더하고 누적 거리를 프리퍼런스에 기록.
+        prefTotalDist += abs(secDist);
+        //
+        //            NSUserDefaults* pref = [NSUserDefaults standardUserDefaults];
+        [pref setFloat:prefTotalDist forKey:@"prefTotalDist"];
+        [pref synchronize];
+        
+        secNum = 0; // 타이머 0.2초 단위 계산 초기화
+        
         if (tempGPSFlag == 0) { // GPS 플래그가 0이면 새 위치값을 이전 위치값으로 대입하지 않는다.
             return;
         }
@@ -203,9 +213,9 @@ int tempError,tempError2;
         
  
 
-        secNum = 0; // 타이머 0.2초 단위 계산 초기화 
-    }
-    
+        
+    } // 이하 0.2초마다 실행되는 부분 
+
  
     // 속도 처리
     // 최고 속도 저장
@@ -239,7 +249,7 @@ int tempError,tempError2;
     dateView.text = [NSString stringWithFormat:@"%02d.%02d.    %02d:%02d.%02d ",comps.month,comps.day,comps.hour,comps.minute,comps.second];
 
         
-        secNum++; // 타이머 0.2초 단위 계산용 누적값. (0~3까지 else밑단 실행, 4에서 
+        secNum++; // 타이머 0.2초 단위 계산용 누적값.  
 
    
 }
@@ -253,39 +263,25 @@ int tempError,tempError2;
 {
     
     
-
+    NSLog(@"델리게이트 호출#1");
     // 델리게이트 정보 취득 후 시간 흐름 체크
     NSDate* eventDate = newLocation.timestamp;
     NSTimeInterval howRecent = [eventDate timeIntervalSinceNow];
     
+    // 시분할 작업용 위치정보 복사
     secNewLocation = newLocation;
     
     
-    
-    //
-    NSLog(@"델리게이트 호출#1");
-    tempError2++;
-    tempNewLocation2=newLocation.coordinate.latitude *100.0f +newLocation.coordinate.longitude;
-    
-    //속도?
+    //속도 : 초속에서 시속으로
     tempSpeed = [newLocation speed]*3.6f; // m/s를 km/h로 바꾸기 (60*60)/1000
 
     
     if(!(tempSpeed<=0.0f)){ //속도 측정할 수 없거나 0이면 거리 합산하지 않는다.
-//    if ((tempNewLocation2 - tempOldLocation3)!=0.000000) { // 위도값 변하면 동작
-        NSLog(@"--------");
-        NSLog(@"tempSpeed:%f",tempSpeed);
         if (tempOldLocation!=nil){ // 초기 위치값을 얻기 전까지는 더하지 않는다.
-/*
-            if (!(oldLocation==tempOldLocation)) { //위치정보 차이 몇번이나 발생했나?
-                NSLog(@"NEW    Location:%@",newLocation);
-                NSLog(@"tempOldLocation:%@",tempOldLocation);
-                tempError++;  //에러발생 빈도 분자
-            }
-*/
+
             CLLocationDistance dist2 = [newLocation distanceFromLocation:tempOldLocation];
             totalDist2 += abs(dist2);
-            
+/*
             // 현재 구한 거리를 누적 거리에 더하고 누적 거리를 프리퍼런스에 기록.
             prefTotalDist += abs(dist2);
             //
@@ -293,10 +289,9 @@ int tempError,tempError2;
             [pref setFloat:prefTotalDist forKey:@"prefTotalDist"];
             [pref synchronize];
             
-
+*/
         }
             tempOldLocation = newLocation; //현재 위치를 과거 위치로 기록 & 속도 측정할 수 없으면 바꾸지 않는다.
-            tempOldLocation3 = newLocation.coordinate.latitude *100.0f +newLocation.coordinate.longitude;
 
     }
     
@@ -335,7 +330,7 @@ int tempError,tempError2;
 
     if (abs(howRecent) < 15.0f)
     {
-        infoTextView.text = [NSString stringWithFormat:@"위도 : %+6f\t경도 : %+6f\n높이 : %6.2f\t\t최고속 : %6.2fkm/h\n속도 : %6.2fm/s\t속도 : %6.2fkm/h\n이동거리2 : %08.3fkm\n누적이동거리 : %010.3fkm\n오차 : %dm\t빈도 :%d\n필터 : %f",
+        infoTextView.text = [NSString stringWithFormat:@"위도 : %+6f\t경도 : %+6f\n높이 : %6.2f\t\t최고속 : %6.2fkm/h\n속도 : %6.2fm/s\t속도 : %6.2fkm/h\n이동거리2 : %08.3fkm\n누적이동거리 : %010.3fkm\n오차 : %dm\n필터 : %f",
                              newLocation.coordinate.latitude,//위도
                              newLocation.coordinate.longitude,//경도
                              newLocation.altitude, //tempAltitude
@@ -345,7 +340,6 @@ int tempError,tempError2;
                              totalDist2/1000,
                              prefTotalDist,
                              abs(totalDist2-totalDist),
-                             tempError2,
                              self.locationManager.distanceFilter];
        
     }
