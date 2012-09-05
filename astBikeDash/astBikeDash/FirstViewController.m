@@ -166,17 +166,19 @@ int tempError,tempError2;
         [secLocationArray addObject:secNewLocation];// 위치 배열에 기록
         NSLog(@"위치정보 %@",secNewLocation);
         
-        
+       
+        int tempGPSFlag = 1; // 임시로 GPS상태값을 알리는 변수. 1: 수신가능, 0:수신 불능
         CLLocationDistance  secDist = [secNewLocation distanceFromLocation:secOldLocation]; // 거리 변화값 획득.
         if (secNewLocation.speed<0.0f||secNewLocation.horizontalAccuracy<0.0f) { // 만약 이동 속도를 구할 수 없다면 secDist(변화값)을 0으로 한다. -> 필터로 구현는 게 나을까?
             NSLog(@"horizontalAccuracy:%f",secNewLocation.horizontalAccuracy);
             secDist = 0.0f;
+            tempGPSFlag = 0; //GPS플래그를 0으로 세팅
         }
         
         
         int tempIdx = [secDistanceArray count];  // 총 어레이 인덱스 값 구하기.
         NSLog(@"tempIdx %d",tempIdx);
-        myArrayLabel.text=[NSString stringWithFormat:@"%d",tempIdx];
+        myArrayLabel.text=[NSString stringWithFormat:@"%d",tempIdx]; //화면에 현재 배열이 몇개 사용됐나 표시
         
         NSString* secTempDist = [secDistanceArray objectAtIndex:tempIdx-1]; // 거리 배열의 이전값 (이전까지의 전체 거리)를 불러옴
         NSLog(@"secTempDist : %@",secTempDist);
@@ -192,6 +194,11 @@ int tempError,tempError2;
         
         NSString* str = [NSString stringWithFormat:@"%f",secTotalDist];
         [secDistanceArray addObject:str];// 거리 배열에 현 누적거리 기록
+        
+        
+        if (tempGPSFlag == 0) { // GPS 플래그가 0이면 새 위치값을 이전 위치값으로 대입하지 않는다.
+            return;
+        }
         secOldLocation = secNewLocation; // 현제 위치정보를 이전 위치 정보로 기록함
         
  
