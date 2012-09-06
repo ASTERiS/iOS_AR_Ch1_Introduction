@@ -177,7 +177,8 @@ int tempError,tempError2;
         }
         
         // 거리기반 속도값 계산
-        distSpeed = secDist; //1초당 거리이동 변화 m/s
+        distSpeed = secDist*3.6f; //1초당 거리이동 변화 m/s-> km/h로 변환후 기록
+        
         //배열 기록 관련
         int tempIdx = [secDistanceArray count];  // 총 어레이 인덱스 값 구하기.
         NSLog(@"tempIdx %d",tempIdx);
