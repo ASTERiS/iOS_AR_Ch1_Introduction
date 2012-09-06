@@ -20,7 +20,7 @@
     float               totalDist2;  //총거리 합산용 2
     float               totalDist3; 
     float               prefTotalDist; //총거리 프리퍼런스 기록용
-    CLLocationSpeed     tempSpeed, lastSpeed, maxSpeed;  //속도용
+    CLLocationSpeed     tempSpeed, lastSpeed, maxSpeed, distSpeed;  //속도용
     UIProgressView*     gpsProgressView; //GPS 프로그래스바
     NSCalendar*         calendar;
     NSDateComponents*   comps;

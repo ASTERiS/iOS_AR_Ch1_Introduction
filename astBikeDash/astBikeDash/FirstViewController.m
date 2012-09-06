@@ -173,9 +173,12 @@ int tempError,tempError2;
             NSLog(@"horizontalAccuracy:%f",secNewLocation.horizontalAccuracy);
             secDist = 0.0f;
             tempGPSFlag = 0; //GPS플래그를 0으로 세팅
+            distSpeed = 0; // 거리기반 속도 계산값을 0으로
         }
         
-        
+        // 거리기반 속도값 계산
+        distSpeed = secDist; //1초당 거리이동 변화 m/s
+        //배열 기록 관련
         int tempIdx = [secDistanceArray count];  // 총 어레이 인덱스 값 구하기.
         NSLog(@"tempIdx %d",tempIdx);
         myArrayLabel.text=[NSString stringWithFormat:@"%d",tempIdx]; //화면에 현재 배열이 몇개 사용됐나 표시
@@ -187,7 +190,7 @@ int tempError,tempError2;
         
         NSLog(@"secTempDistDouble : %f",secTempDistDouble);
         
-        secTotalDist = secDist + secTempDistDouble; // 기존 거리값과 변화값을 더해줌
+        secTotalDist = abs(secDist) + secTempDistDouble; // 기존 거리값과 변화값을 더해줌 (절대값!!!!!!!!!)
         
         secTotalDistLabel.text= [NSString stringWithFormat:@"이동거리 : %010.3f",secTotalDist/1000]; // 레이블에 표시
         NSLog(@"secTotalDist %f", secTotalDist);
@@ -228,7 +231,7 @@ int tempError,tempError2;
 
     
     // 측정값 없을 때의 처리
-    float tempSpeed3 = (tempSpeed+lastSpeed)/2;
+    float tempSpeed3 = (tempSpeed+lastSpeed+distSpeed)/3; //(이번에 구한 속도값+이전에 구한 속도값+거리기반속도값 )/3
     lastSpeed=tempSpeed3;
     if (tempSpeed<=0.0f) {
         tempSpeed3 = 0.0f;   // 측정할 수 없을 땐 0 표시
@@ -338,7 +341,7 @@ int tempError,tempError2;
                              newLocation.speed,//속도
                              tempSpeed,
                              totalDist2/1000,
-                             prefTotalDist,
+                             prefTotalDist/1000,
                              abs(totalDist2-totalDist),
                              self.locationManager.distanceFilter];
        
