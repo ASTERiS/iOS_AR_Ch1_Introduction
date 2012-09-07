@@ -232,7 +232,8 @@ int tempError,tempError2;
 
     
     // 측정값 없을 때의 처리
-    float tempSpeed3 = (tempSpeed+lastSpeed+distSpeed)/3; //(이번에 구한 속도값+이전에 구한 속도값+거리기반속도값 )/3
+//    float tempSpeed3 = (tempSpeed+lastSpeed+distSpeed)/3; //(이번에 구한 속도값+이전에 구한 속도값+거리기반속도값 )/3
+    float tempSpeed3 = (tempSpeed+lastSpeed)/2; //(이번에 구한 속도값+이전에 구한 속도값+거리기반속도값 )/3
     lastSpeed=tempSpeed3;
     if (tempSpeed<=0.0f) {
         tempSpeed3 = 0.0f;   // 측정할 수 없을 땐 0 표시
@@ -277,28 +278,8 @@ int tempError,tempError2;
     
     
     //속도 : 초속에서 시속으로
-    tempSpeed = [newLocation speed]*3.6f; // m/s를 km/h로 바꾸기 (60*60)/1000
-
-    
-    if(!(tempSpeed<=0.0f)){ //속도 측정할 수 없거나 0이면 거리 합산하지 않는다.
-        if (tempOldLocation!=nil){ // 초기 위치값을 얻기 전까지는 더하지 않는다.
-
-            CLLocationDistance dist2 = [newLocation distanceFromLocation:tempOldLocation];
-            totalDist2 += abs(dist2);
-/*
-            // 현재 구한 거리를 누적 거리에 더하고 누적 거리를 프리퍼런스에 기록.
-            prefTotalDist += abs(dist2);
-            //
-//            NSUserDefaults* pref = [NSUserDefaults standardUserDefaults];
-            [pref setFloat:prefTotalDist forKey:@"prefTotalDist"];
-            [pref synchronize];
-            
-*/
-        }
-            tempOldLocation = newLocation; //현재 위치를 과거 위치로 기록 & 속도 측정할 수 없으면 바꾸지 않는다.
-
-    }
-    
+//    tempSpeed = [newLocation speed]*3.6f; // m/s를 km/h로 바꾸기 (60*60)/1000
+    tempSpeed = newLocation.speed*3.6f;
 
     
     // GPS 신호 정확성 체크
@@ -334,14 +315,13 @@ int tempError,tempError2;
 
     if (abs(howRecent) < 15.0f)
     {
-        infoTextView.text = [NSString stringWithFormat:@"위도 : %+6f\t경도 : %+6f\n높이 : %6.2f\t\t최고속 : %6.2fkm/h\n속도 : %6.2fm/s\t속도 : %6.2fkm/h\n이동거리2 : %08.3fkm\n누적이동거리 : %010.3fkm\n오차 : %dm\n필터 : %f",
+        infoTextView.text = [NSString stringWithFormat:@"위도 : %+6f\t경도 : %+6f\n높이 : %6.2f\t\t최고속 : %6.2fkm/h\n속도 : %6.2fm/s\t속도 : %6.2fkm/h\n누적이동거리 : %010.3fkm\n오차 : %dm\n필터 : %f",
                              newLocation.coordinate.latitude,//위도
                              newLocation.coordinate.longitude,//경도
                              newLocation.altitude, //tempAltitude
                              maxSpeed,
                              newLocation.speed,//속도
                              tempSpeed,
-                             totalDist2/1000,
                              prefTotalDist/1000,
                              abs(totalDist2-totalDist),
                              self.locationManager.distanceFilter];
