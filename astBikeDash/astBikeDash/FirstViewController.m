@@ -211,8 +211,8 @@ int tempError,tempError2;
         
         secNum = 0; // 타이머 0.2초 단위 계산 초기화
         
-        if (tempGPSFlag == 0) { // GPS 플래그가 0이면 새 위치값을 이전 위치값으로 대입하지 않는다.
- 
+        if (tempGPSFlag == 0) { 
+                // GPS 플래그가 0이면 새 위치값을 이전 위치값으로 대입하지 않는다.
         }else{
         secOldLocation = secNewLocation; // 현제 위치정보를 이전 위치 정보로 기록함
         }
