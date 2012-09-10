@@ -58,6 +58,7 @@
 @property (strong, nonatomic) IBOutlet UILabel *secTotalDistLabel;
 @property (strong, nonatomic) IBOutlet UILabel *filterLabel;
 
+- (IBAction)myMapViewModalButton;
 
 
 -(void)startLocationInit; // 위치정보 취득 초기화

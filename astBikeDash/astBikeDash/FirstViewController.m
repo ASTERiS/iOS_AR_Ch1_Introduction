@@ -7,6 +7,7 @@
 //
 
 #import "FirstViewController.h"
+#import "myRouteMapCont.h"
 
 @interface FirstViewController ()
 
@@ -211,10 +212,10 @@ int tempError,tempError2;
         secNum = 0; // 타이머 0.2초 단위 계산 초기화
         
         if (tempGPSFlag == 0) { // GPS 플래그가 0이면 새 위치값을 이전 위치값으로 대입하지 않는다.
-            return;
-        }
+ 
+        }else{
         secOldLocation = secNewLocation; // 현제 위치정보를 이전 위치 정보로 기록함
-        
+        }
  
 
         
@@ -229,8 +230,6 @@ int tempError,tempError2;
     }
     
     
-
-    
     // 측정값 없을 때의 처리
 //    float tempSpeed3 = (tempSpeed+lastSpeed+distSpeed)/3; //(이번에 구한 속도값+이전에 구한 속도값+거리기반속도값 )/3
     float tempSpeed3 = (tempSpeed+lastSpeed)/2; //(이번에 구한 속도값+이전에 구한 속도값+거리기반속도값 )/3
@@ -243,7 +242,7 @@ int tempError,tempError2;
     infoSpeedView.text = [NSString stringWithFormat:@"%03d",(int)tempSpeed3]; //(큰 숫자) 소수점 전체 버리기 위해 int로 캐스팅
     double tempNum = tempSpeed3-(int)tempSpeed3;
     int tempNum2 = (int)(tempNum*10); //(작은 숫자) 소수점 두째 자리에서 버림을 위해 10을 곱하고 int로 캐스팅
-    infoSpeedView2.text = [NSString stringWithFormat:@".%01d",tempNum2]; 
+    infoSpeedView2.text = [NSString stringWithFormat:@".%01d",abs(tempNum2)];
     
     //날짜 처리
     //날짜 콤포넌트 취득
@@ -378,10 +377,6 @@ int tempError,tempError2;
 }
 
 // 위치정보 취득 초기화
-
-
-
-
 -(void)startLocationInit
 {
 
@@ -414,6 +409,12 @@ int tempError,tempError2;
 
 }
 
+
+//맵버튼 누르기
+- (IBAction)myMapViewModalButton {
+    myRouteMapCont* myRouteMapContForModal = [[myRouteMapCont alloc]init];
+    [self presentModalViewController:myRouteMapContForModal animated:YES];
+}
 
 
 

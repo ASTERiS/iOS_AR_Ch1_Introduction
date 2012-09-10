@@ -13,6 +13,9 @@
 		845E44A415E14D7A002B9B83 /* bgm.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 845E44A315E14D7A002B9B83 /* bgm.mp3 */; };
 		845E44AF15E15115002B9B83 /* re_bgm.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 845E44AE15E15115002B9B83 /* re_bgm.mp3 */; };
 		845E44B515E15DEB002B9B83 /* MediaPlayer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 845E44B415E15DEB002B9B83 /* MediaPlayer.framework */; };
+		84AEDFF215FE4429000BB037 /* myRouteMapCont.m in Sources */ = {isa = PBXBuildFile; fileRef = 84AEDFF015FE4429000BB037 /* myRouteMapCont.m */; };
+		84AEDFF315FE4429000BB037 /* myRouteMapCont.xib in Resources */ = {isa = PBXBuildFile; fileRef = 84AEDFF115FE4429000BB037 /* myRouteMapCont.xib */; };
+		84AEDFF515FE4563000BB037 /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 84AEDFF415FE4563000BB037 /* MapKit.framework */; };
 		84E8DAA315DC96B0005BE68D /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 84E8DAA215DC96B0005BE68D /* UIKit.framework */; };
 		84E8DAA515DC96B0005BE68D /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 84E8DAA415DC96B0005BE68D /* Foundation.framework */; };
 		84E8DAA715DC96B0005BE68D /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 84E8DAA615DC96B0005BE68D /* CoreGraphics.framework */; };
@@ -38,6 +41,10 @@
 		845E44A515E14DB6002B9B83 /* test.m4a */ = {isa = PBXFileReference; lastKnownFileType = file; path = test.m4a; sourceTree = "<group>"; };
 		845E44AE15E15115002B9B83 /* re_bgm.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = re_bgm.mp3; sourceTree = "<group>"; };
 		845E44B415E15DEB002B9B83 /* MediaPlayer.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MediaPlayer.framework; path = System/Library/Frameworks/MediaPlayer.framework; sourceTree = SDKROOT; };
+		84AEDFEF15FE4429000BB037 /* myRouteMapCont.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = myRouteMapCont.h; path = ../myRouteMapCont.h; sourceTree = "<group>"; };
+		84AEDFF015FE4429000BB037 /* myRouteMapCont.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = myRouteMapCont.m; path = ../myRouteMapCont.m; sourceTree = "<group>"; };
+		84AEDFF115FE4429000BB037 /* myRouteMapCont.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = myRouteMapCont.xib; path = ../myRouteMapCont.xib; sourceTree = "<group>"; };
+		84AEDFF415FE4563000BB037 /* MapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MapKit.framework; path = System/Library/Frameworks/MapKit.framework; sourceTree = SDKROOT; };
 		84E8DA9E15DC96B0005BE68D /* astBikeDash.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = astBikeDash.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		84E8DAA215DC96B0005BE68D /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		84E8DAA415DC96B0005BE68D /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -66,9 +73,10 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				84E8DAD215DC9BAE005BE68D /* CoreLocation.framework in Frameworks */,
+				84AEDFF515FE4563000BB037 /* MapKit.framework in Frameworks */,
 				845E44B515E15DEB002B9B83 /* MediaPlayer.framework in Frameworks */,
 				842D62F615E12DE1000C9CA1 /* AVFoundation.framework in Frameworks */,
-				84E8DAD215DC9BAE005BE68D /* CoreLocation.framework in Frameworks */,
 				84E8DAA315DC96B0005BE68D /* UIKit.framework in Frameworks */,
 				84E8DAA515DC96B0005BE68D /* Foundation.framework in Frameworks */,
 				84E8DAA715DC96B0005BE68D /* CoreGraphics.framework in Frameworks */,
@@ -81,6 +89,7 @@
 		84E8DA9315DC96B0005BE68D = {
 			isa = PBXGroup;
 			children = (
+				84AEDFF415FE4563000BB037 /* MapKit.framework */,
 				845E44B415E15DEB002B9B83 /* MediaPlayer.framework */,
 				842D62F515E12DE1000C9CA1 /* AVFoundation.framework */,
 				84E8DAA815DC96B0005BE68D /* astBikeDash */,
@@ -111,6 +120,9 @@
 		84E8DAA815DC96B0005BE68D /* astBikeDash */ = {
 			isa = PBXGroup;
 			children = (
+				84AEDFEF15FE4429000BB037 /* myRouteMapCont.h */,
+				84AEDFF015FE4429000BB037 /* myRouteMapCont.m */,
+				84AEDFF115FE4429000BB037 /* myRouteMapCont.xib */,
 				84E8DAB115DC96B0005BE68D /* AppDelegate.h */,
 				84E8DAB215DC96B0005BE68D /* AppDelegate.m */,
 				845E449E15E14BAF002B9B83 /* bgm.wav */,
@@ -206,6 +218,7 @@
 				845E44A115E14BAF002B9B83 /* se.wav in Resources */,
 				845E44A415E14D7A002B9B83 /* bgm.mp3 in Resources */,
 				845E44AF15E15115002B9B83 /* re_bgm.mp3 in Resources */,
+				84AEDFF315FE4429000BB037 /* myRouteMapCont.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -220,6 +233,7 @@
 				84E8DAB315DC96B0005BE68D /* AppDelegate.m in Sources */,
 				84E8DAB615DC96B0005BE68D /* FirstViewController.m in Sources */,
 				84E8DABD15DC96B1005BE68D /* SecondViewController.m in Sources */,
+				84AEDFF215FE4429000BB037 /* myRouteMapCont.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
