@@ -9,10 +9,17 @@
 #import "SecondViewController.h"
 
 enum filterButtonTag {
-    FILTER_0    = 100,
-    FILTER_1    = 101,
-    FILTER_10   = 102,
-    FILTER_100  = 103
+    FILTER_00   = 100,
+    FILTER_01   = 101,
+    FILTER_02   = 102,
+    FILTER_03   = 103,
+    FILTER_04   = 104,
+    FILTER_05   = 105,
+    FILTER_06   = 106,
+    FILTER_07   = 107,
+    FILTER_08   = 108,
+    FILTER_09   = 109,
+    FILTER_AU   = 200
 };
 
 @interface SecondViewController ()
@@ -71,23 +78,63 @@ enum filterButtonTag {
             NSUserDefaults* pref = [NSUserDefaults standardUserDefaults];
     
     switch ([sender tag]) {
-        case FILTER_0:
+        case FILTER_00:
             
             [pref setFloat:-1.0f forKey:@"prefFilter"];
             [pref synchronize];
             break;
             
-        case FILTER_1:
+        case FILTER_01:
             
-            [pref setFloat:1.0f forKey:@"prefFilter"];
+            [pref setFloat:0.1f forKey:@"prefFilter"];
             [pref synchronize];
             break;
-        case FILTER_10:
+        case FILTER_02:
             
-            [pref setFloat:10.0f forKey:@"prefFilter"];
+            [pref setFloat:0.2f forKey:@"prefFilter"];
             [pref synchronize];
             break;
-        case FILTER_100:
+        case FILTER_03:
+            
+            [pref setFloat:0.3f forKey:@"prefFilter"];
+            [pref synchronize];
+            break;
+        case FILTER_04:
+            
+            [pref setFloat:0.4f forKey:@"prefFilter"];
+            [pref synchronize];
+            break;
+            
+        case FILTER_05:
+            
+            [pref setFloat:0.5f forKey:@"prefFilter"];
+            [pref synchronize];
+            break;
+        case FILTER_06:
+            
+            [pref setFloat:0.6f forKey:@"prefFilter"];
+            [pref synchronize];
+            break;
+        case FILTER_07:
+            
+            [pref setFloat:0.7f forKey:@"prefFilter"];
+            [pref synchronize];
+            break;
+        case FILTER_08:
+            
+            [pref setFloat:0.8f forKey:@"prefFilter"];
+            [pref synchronize];
+            break;
+        case FILTER_09:
+            
+            [pref setFloat:0.9f forKey:@"prefFilter"];
+            [pref synchronize];
+            break;
+            
+
+           
+            
+        case FILTER_AU:
             
             [pref setFloat:-3.0f forKey:@"prefFilter"];
             [pref synchronize];

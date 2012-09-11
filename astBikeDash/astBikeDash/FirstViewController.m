@@ -150,7 +150,8 @@ int tempError,tempError2;
             
         }else{
         self.locationManager.distanceFilter =[pref floatForKey:@"prefFilter"];
-            filterLabel.text = @"MAN.";
+//            self.locationManager.distanceFilter =0.5;
+            filterLabel.text = [NSString stringWithFormat:@"M%f",[pref floatForKey:@"prefFilter"]];
         }
         
         
