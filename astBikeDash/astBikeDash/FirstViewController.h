@@ -8,6 +8,7 @@
 
 #import <UIKit/UIKit.h>
 #import <CoreLocation/CoreLocation.h>
+#import <MapKit/MKMapView.h>
 
 
 
@@ -57,6 +58,10 @@
 @property (weak, nonatomic) IBOutlet UILabel *myArrayLabel;
 @property (strong, nonatomic) IBOutlet UILabel *secTotalDistLabel;
 @property (strong, nonatomic) IBOutlet UILabel *filterLabel;
+
+@property (weak, nonatomic) IBOutlet UILabel *gpsTypeLabel;
+
+
 
 - (IBAction)myMapViewModalButton;
 

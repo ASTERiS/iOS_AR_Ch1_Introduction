@@ -16,5 +16,7 @@
 
 - (IBAction)myFilterButton:(id)sender;
 
+- (IBAction)gpsTypeButton:(id)sender;
+
 
 @end

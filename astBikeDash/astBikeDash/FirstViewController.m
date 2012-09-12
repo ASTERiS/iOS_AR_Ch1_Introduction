@@ -21,6 +21,8 @@
 @synthesize myArrayLabel;
 @synthesize secTotalDistLabel;
 @synthesize filterLabel;
+@synthesize gpsTypeLabel;
+
 @synthesize infoTextView;
 @synthesize gpsSignalView;
 @synthesize locationManager;
@@ -104,6 +106,8 @@ int tempError,tempError2;
     [self setMyArrayLabel:nil];
     [self setSecTotalDistLabel:nil];
     [self setFilterLabel:nil];
+
+    [self setGpsTypeLabel:nil];
     [super viewDidUnload];
     // Release any retained subviews of the main view.
     
@@ -132,6 +136,41 @@ int tempError,tempError2;
         // 프리퍼런스 값에서 읽어 전역변수에 대입
         
 //        NSUserDefaults* pref = [NSUserDefaults standardUserDefaults];
+        
+ //      int prefGPSType = [pref floatForKey:@"prefGPSType"];
+        //필터값 갱신 및 적용
+        
+        if ([pref floatForKey:@"prefGPSType"]==0) {
+            
+            if (gpsTypeLabel.text == @"NEW") {
+               [self.locationManager stopMonitoringSignificantLocationChanges];
+                [self.locationManager startUpdatingLocation];
+            }else{
+                [self.locationManager startUpdatingLocation];
+
+            }
+                gpsTypeLabel.text = @"OLD";        
+            
+
+        }else{
+            
+            if (gpsTypeLabel.text == @"OLD") {
+                [self.locationManager stopUpdatingLocation];
+                [self.locationManager startMonitoringSignificantLocationChanges];
+            }else{
+          [self.locationManager startMonitoringSignificantLocationChanges];
+            }
+             gpsTypeLabel.text = @"NEW";
+        }
+        
+        
+        
+        
+        
+        
+   
+        
+        
         //총 누적 거리 갱신
         prefTotalDist = [pref floatForKey:@"prefTotalDist"];
         //필터값 갱신 및 적용
@@ -415,7 +454,6 @@ int tempError,tempError2;
     myRouteMapCont* myRouteMapContForModal = [[myRouteMapCont alloc]init];
     [self presentModalViewController:myRouteMapContForModal animated:YES];
 }
-
 
 
 @end
