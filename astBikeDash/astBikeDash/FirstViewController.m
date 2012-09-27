@@ -353,7 +353,7 @@ int tempError,tempError2;
 
     if (abs(howRecent) < 15.0f)
     {
-        infoTextView.text = [NSString stringWithFormat:@"위도 : %+6f\t경도 : %+6f\n고도 : %6.2f\t\t최고속 : %6.2fkm/h\n속도 : %6.2fm/s\t속도 : %6.2fkm/h\n누적이동거리 : %010.3fkm\n오차 : %dm\n필터 : %f",
+        infoTextView.text = [NSString stringWithFormat:@"위도 : %+6f\t경도 : %+6f\n높이 : %6.2f\t\t최고속 : %6.2fkm/h\n속도 : %6.2fm/s\t속도 : %6.2fkm/h\n누적이동거리 : %010.3fkm\n오차 : %dm\n필터 : %f",
                              newLocation.coordinate.latitude,//위도
                              newLocation.coordinate.longitude,//경도
                              newLocation.altitude, //tempAltitude
