@@ -69,7 +69,7 @@ int tempError,tempError2;
     
 
     //타이머 생성
-    [NSTimer scheduledTimerWithTimeInterval:0.2f
+    [NSTimer scheduledTimerWithTimeInterval:0.25f
                                      target:self
                                    selector:@selector(onTick:)
                                    userInfo:nil
@@ -129,7 +129,7 @@ int tempError,tempError2;
 
  #pragma mark 1sec_part       
     NSLog(@"secNum:%d",secNum);
-    if (secNum ==4) // 5번째 (0.2*5 1초)일 때 거리정보 계산을 추가로 실행함.
+    if (secNum ==1) // (0.25*4 1초)에서 0.5초마다(secNum가 더해져서 1일때 실행되고 0으로 초기화)일 때 거리정보 계산을 추가로 실행함.
     {
  
         
@@ -248,7 +248,7 @@ int tempError,tempError2;
         [pref setFloat:prefTotalDist forKey:@"prefTotalDist"];
         [pref synchronize];
         
-        secNum = 0; // 타이머 0.2초 단위 계산 초기화
+        secNum = 0; // 타이머 0.25초 단위 계산 초기화
         
         if (tempGPSFlag == 0) { 
                 // GPS 플래그가 0이면 새 위치값을 이전 위치값으로 대입하지 않는다.

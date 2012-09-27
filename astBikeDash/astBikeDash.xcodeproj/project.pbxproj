@@ -31,6 +31,7 @@
 		84E8DAC415DC96B1005BE68D /* FirstViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 84E8DAC215DC96B1005BE68D /* FirstViewController.xib */; };
 		84E8DAC715DC96B1005BE68D /* SecondViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 84E8DAC515DC96B1005BE68D /* SecondViewController.xib */; };
 		84E8DAD215DC9BAE005BE68D /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 84E8DAD115DC9BAE005BE68D /* CoreLocation.framework */; };
+		896393F21613FC28008111B6 /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 896393F11613FC28008111B6 /* Default-568h@2x.png */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -66,6 +67,7 @@
 		84E8DAC315DC96B1005BE68D /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/FirstViewController.xib; sourceTree = "<group>"; };
 		84E8DAC615DC96B1005BE68D /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/SecondViewController.xib; sourceTree = "<group>"; };
 		84E8DAD115DC9BAE005BE68D /* CoreLocation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreLocation.framework; path = System/Library/Frameworks/CoreLocation.framework; sourceTree = SDKROOT; };
+		896393F11613FC28008111B6 /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-568h@2x.png"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -89,6 +91,7 @@
 		84E8DA9315DC96B0005BE68D = {
 			isa = PBXGroup;
 			children = (
+				896393F11613FC28008111B6 /* Default-568h@2x.png */,
 				84AEDFF415FE4563000BB037 /* MapKit.framework */,
 				845E44B415E15DEB002B9B83 /* MediaPlayer.framework */,
 				842D62F515E12DE1000C9CA1 /* AVFoundation.framework */,
@@ -219,6 +222,7 @@
 				845E44A415E14D7A002B9B83 /* bgm.mp3 in Resources */,
 				845E44AF15E15115002B9B83 /* re_bgm.mp3 in Resources */,
 				84AEDFF315FE4429000BB037 /* myRouteMapCont.xib in Resources */,
+				896393F21613FC28008111B6 /* Default-568h@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
