@@ -209,12 +209,17 @@ int tempError,tempError2;
         
         int tempGPSFlag = 1; // 임시로 GPS상태값을 알리는 변수. 1: 수신가능, 0:수신 불능
         CLLocationDistance  secDist = [secNewLocation distanceFromLocation:secOldLocation]; // 거리 변화값 획득.
+
+        
+// 이동속도 구할 수 없을 때의 처리 무효화. -> 테스트 후 넣을지 뺄지 고려해볼 것.
+/*
         if (secNewLocation.speed<0.0f||secNewLocation.horizontalAccuracy<0.0f) { // 만약 이동 속도를 구할 수 없다면 secDist(변화값)을 0으로 한다. -> 필터로 구현는 게 나을까?
             NSLog(@"horizontalAccuracy:%f",secNewLocation.horizontalAccuracy);
             secDist = 0.0f;
             tempGPSFlag = 0; //GPS플래그를 0으로 세팅
             distSpeed = 0; // 거리기반 속도 계산값을 0으로
         }
+ */
         
         // 거리기반 속도값 계산
         distSpeed = secDist*3.6f; //1초당 거리이동 변화 m/s-> km/h로 변환후 기록
