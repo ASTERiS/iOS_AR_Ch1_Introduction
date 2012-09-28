@@ -26,6 +26,7 @@
 @synthesize infoTextView;
 @synthesize gpsSignalView;
 @synthesize locationManager;
+@synthesize checkButton;
 
 int tempError,tempError2;
 
@@ -108,6 +109,7 @@ int tempError,tempError2;
     [self setFilterLabel:nil];
 
     [self setGpsTypeLabel:nil];
+    [self setCheckButton:nil];
     [super viewDidUnload];
     // Release any retained subviews of the main view.
     
@@ -450,6 +452,40 @@ int tempError,tempError2;
     // 오브젝트 대입
     calendar = [[NSCalendar alloc]initWithCalendarIdentifier:NSGregorianCalendar];
    
+
+}
+
+
+// 누계 적산 - DB 쌓인 것 계산
+- (IBAction)totalDistButton:(id)sender {
+    NSNumber* tagNum = [NSNumber numberWithInt:[sender tag]];
+    [NSThread detachNewThreadSelector:@selector(alertDist:) toTarget:self withObject:tagNum];
+//    [self alertDist];
+    
+}
+//멀티스레드용 분리.
+- (void)alertDist:(NSNumber*)buttonTag
+{
+    int tempIdx = [secLocationArray count];  // 총 어레이 인덱스 값 구하기.
+    NSLog(@"총어레이 인덱스 : %d",tempIdx);
+    double totalDistButtonOrigin = secTotalDist;
+    for (int i = 1; i<=tempIdx-2; i++) {
+        NSString* totalTempLoc01 = [secLocationArray objectAtIndex:i];
+        
+        CLLocation *temp01 = totalTempLoc01;
+        NSLog(@"temp01 : %@",temp01);
+        NSString* totalTempLoc02 = [secLocationArray objectAtIndex:i+1];
+        CLLocation *temp02 = totalTempLoc02;
+        NSLog(@"temp02 : %@",temp02);
+        
+        totalDistButton += abs([temp01 distanceFromLocation:temp02]);
+        NSLog(@"Total : %f",totalDistButton);
+        NSLog(@"-------------------");
+    }
+    NSString* tempStr = [NSString stringWithFormat:@"%d]%7.0f:%7.0f",tempIdx,totalDistButtonOrigin,totalDistButton];
+    checkButton.text = tempStr;
+    totalDistButton = 0;
+    totalDistButtonOrigin = 0;
 
 }
 

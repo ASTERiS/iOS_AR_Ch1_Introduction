@@ -44,6 +44,8 @@
     
     NSUserDefaults*     pref; // 프리퍼런스 억세스용
     
+        CLLocationDistance  totalDistButton; // 변수내 값 확인용 총거리
+    
 }
 
 
@@ -60,7 +62,9 @@
 @property (strong, nonatomic) IBOutlet UILabel *filterLabel;
 
 @property (weak, nonatomic) IBOutlet UILabel *gpsTypeLabel;
+@property (strong, nonatomic) IBOutlet UILabel *checkButton;
 
+- (IBAction)totalDistButton:(id)sender;
 
 
 - (IBAction)myMapViewModalButton;
