@@ -96,6 +96,23 @@ int tempError,tempError2;
     secDistanceArray =[NSMutableArray array];
     [secDistanceArray addObject:@"start-distance"];// 배열에 기록
     
+    
+    CLLocation* tempLoc=[[CLLocation alloc]initWithLatitude: 00.000000  longitude:00.000000];
+    CLLocation* tempLoc2=[[CLLocation alloc]initWithLatitude:00.000010  longitude:00.000010];
+    
+    
+    
+    CLLocationDistance  secDist = [tempLoc distanceFromLocation:tempLoc2]; // 거리 변화값 획득.
+    
+
+    
+    UIAlertView* alert = [[UIAlertView alloc]initWithTitle:@""
+                                                   message:[NSString stringWithFormat:@"거리 : %f",secDist]
+                                                  delegate:self
+                                         cancelButtonTitle:@"OK"
+                                         otherButtonTitles:nil, nil];
+    [alert show];
+
  
     
 }
