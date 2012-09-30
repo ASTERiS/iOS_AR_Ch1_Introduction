@@ -46,6 +46,15 @@
     
         CLLocationDistance  totalDistButton; // 변수내 값 확인용 총거리
     
+    //신규 거리 계산용 저장 변수
+    double  new_lat;
+    double  new_lon;
+    double  old_lat;
+    double  old_lon;
+    float   compareDist;
+    
+    
+    
 }
 
 
@@ -67,13 +76,16 @@
 - (IBAction)totalDistButton:(id)sender;
 
 
+
 - (IBAction)myMapViewModalButton;
 
 
 -(void)startLocationInit; // 위치정보 취득 초기화
+@property (weak, nonatomic) IBOutlet UILabel *compareDistLabel;
 
 
-
+// GPS 거리 계산용 테스트 루틴
+//-(float)testGetDistP1lat:(double)P1_latitude P1lon:(double)P1_longitude P2lat:(double)P2_latitude P2lon:(double)P2_longitude;
 
 
 @end

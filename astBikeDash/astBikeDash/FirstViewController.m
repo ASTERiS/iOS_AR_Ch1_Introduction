@@ -8,6 +8,7 @@
 
 #import "FirstViewController.h"
 #import "myRouteMapCont.h"
+#import <math.h>
 
 @interface FirstViewController ()
 
@@ -27,6 +28,9 @@
 @synthesize gpsSignalView;
 @synthesize locationManager;
 @synthesize checkButton;
+@synthesize compareDistLabel;
+
+
 
 int tempError,tempError2;
 
@@ -110,6 +114,8 @@ int tempError,tempError2;
 
     [self setGpsTypeLabel:nil];
     [self setCheckButton:nil];
+
+    [self setCompareDistLabel:nil];
     [super viewDidUnload];
     // Release any retained subviews of the main view.
     
@@ -211,6 +217,12 @@ int tempError,tempError2;
         
         int tempGPSFlag = 1; // 임시로 GPS상태값을 알리는 변수. 1: 수신가능, 0:수신 불능
         CLLocationDistance  secDist = [secNewLocation distanceFromLocation:secOldLocation]; // 거리 변화값 획득.
+        new_lat = secNewLocation.coordinate.latitude;
+        new_lon = secNewLocation.coordinate.longitude;
+        old_lat = secOldLocation.coordinate.latitude;
+        old_lon = secOldLocation.coordinate.longitude;
+        
+
 
         
 // 이동속도 구할 수 없을 때의 처리 무효화. -> 테스트 후 넣을지 뺄지 고려해볼 것.
@@ -428,7 +440,9 @@ int tempError,tempError2;
 
     self.locationManager=[[CLLocationManager alloc]init];
     self.locationManager.delegate=self;
-    self.locationManager.desiredAccuracy = kCLLocationAccuracyBest;
+//    self.locationManager.desiredAccuracy = kCLLocationAccuracyBest;
+    self.locationManager.desiredAccuracy = kCLLocationAccuracyBestForNavigation;
+
     self.locationManager.distanceFilter = kCLDistanceFilterNone;               // 필터?
 //    self.locationManager.distanceFilter = 1.0f;               // 필터? (미터단위)
 
@@ -496,5 +510,114 @@ int tempError,tempError2;
     [self presentModalViewController:myRouteMapContForModal animated:YES];
 }
 
+
+
+
+// GPS 거리계산
+/*
+-(float)testGetDistP1lat:(double)P1_latitude P1lon:(double)P1_longitude P2lat:(double)P2_latitude P2lon:(double)P2_longitude
+{
+
+    
+        if ((P1_latitude == P2_latitude)&&(P1_longitude == P2_longitude))
+        {
+            return 0;
+        }
+        
+        double e10 = P1_latitude * M_PI / 180;
+        double e11 = P1_longitude * M_PI / 180;
+        double e12 = P2_latitude * M_PI / 180;
+        double e13 = P2_longitude * M_PI / 180;
+        
+        // 타원체 GRS80 
+        double c16 = 6356752.314140910;
+        double c15 = 6378137.000000000;
+        double c17 = 0.0033528107;
+        
+        
+        double f15 = c17 + c17 * c17;
+        double f16 = f15 / 2;
+        double f17 = c17 * c17 / 2;
+        double f18 = c17 * c17 / 8;
+        double f19 = c17 * c17 / 16;
+        
+        double c18 = e13 - e11;
+        double c20 = (1 - c17) * tan(e10);
+        double c21 = atan(c20);
+        double c22 = sin(c21);
+        double c23 = cos(c21);
+        double c24 = (1 - c17) * tan(e12);
+        double c25 = atan(c24);
+        double c26 = sin(c25);
+        double c27 = cos(c25);
+        
+        double c29 = c18;
+        double c31 = (c27 * sin(c29) * c27 * sin(c29)) + (c23 * c26 - c22 * c27 * cos(c29)) * (c23 * c26 - c22 * c27 * cos(c29));
+        double c33 = (c22 * c26) + (c23 * c27 * cos(c29));
+        double c35 = sqrt(c31) / c33;
+        double c36 = atan(c35);
+        double c38 = 0;
+        if (c31==0)
+        {
+            c38 = 0;
+        }else{
+            c38 = c23 * c27 * sin(c29) / sqrt(c31);
+        }
+        
+        double c40 = 0;
+        if ((cos(asin(c38)) * cos(asin(c38))) == 0)
+        {
+            c40 = 0;
+        }else{
+            c40 = c33 - 2 * c22 * c26 / (cos(asin(c38)) * cos(asin(c38)));
+        }
+        
+        double c41 = cos(asin(c38)) * cos(asin(c38)) * (c15 * c15 - c16 * c16) / (c16 * c16);
+        double c43 = 1 + c41 / 16384 * (4096 + c41 * (-768 + c41 * (320 - 175 * c41)));
+        double c45 = c41 / 1024 * (256 + c41 * (-128 + c41 * (74 - 47 * c41)));
+        double c47 = c45 * sqrt(c31) * (c40 + c45 / 4 * (c33 * (-1 + 2 * c40 * c40) - c45 / 6 * c40 * (-3 + 4 * c31) * (-3 + 4 * c40 * c40)));
+        double c50 = c17 / 16 * cos(asin(c38)) * cos(asin(c38)) * (4 + c17 * (4 - 3 * cos(asin(c38)) * cos(asin(c38))));
+        double c52 = c18 + (1 - c50) * c17 * c38 * (aos(c33) + c50 * sin(acos(c33)) * (c40 + c50 * c33 * (-1 + 2 * c40 * c40)));
+        
+        double c54 = c16 * c43 * (atan(c35) - c47);
+        
+        // return distance in meter
+        return c54;
+    }
+
+*/
+/*
+    public short bearingP1toP2(double P1_latitude, double P1_longitude, double P2_latitude, double P2_longitude)
+    {
+        // 현재 위치 : 위도나 경도는 지구 중심을 기반으로 하는 각도이기 때문에 라디안 각도로 변환한다.
+        double Cur_Lat_radian = P1_latitude * (3.141592 / 180);
+        double Cur_Lon_radian = P1_longitude * (3.141592 / 180);
+        
+        
+        // 목표 위치 : 위도나 경도는 지구 중심을 기반으로 하는 각도이기 때문에 라디안 각도로 변환한다.
+        double Dest_Lat_radian = P2_latitude * (3.141592 / 180);
+        double Dest_Lon_radian = P2_longitude * (3.141592 / 180);
+        
+        // radian distance
+        double radian_distance = 0;
+        radian_distance = Math.Acos(Math.Sin(Cur_Lat_radian) * Math.Sin(Dest_Lat_radian) + Math.Cos(Cur_Lat_radian) * Math.Cos(Dest_Lat_radian) * Math.Cos(Cur_Lon_radian - Dest_Lon_radian));
+        
+        // 목적지 이동 방향을 구한다.(현재 좌표에서 다음 좌표로 이동하기 위해서는 방향을 설정해야 한다. 라디안값이다.
+        double radian_bearing = Math.Acos((Math.Sin(Dest_Lat_radian) - Math.Sin(Cur_Lat_radian) * Math.Cos(radian_distance)) / (Math.Cos(Cur_Lat_radian) * Math.Sin(radian_distance)));		// acos의 인수로 주어지는 x는 360분법의 각도가 아닌 radian(호도)값이다.
+        
+        double true_bearing = 0;
+        if (Math.Sin(Dest_Lon_radian - Cur_Lon_radian) < 0)
+        {
+            true_bearing = radian_bearing * (180 / 3.141592);
+            true_bearing = 360 - true_bearing;
+        }
+        else
+        {
+            true_bearing = radian_bearing * (180 / 3.141592);
+        }
+        
+        return (short)true_bearing;
+}
+*/
 
 @end
