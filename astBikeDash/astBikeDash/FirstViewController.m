@@ -67,6 +67,7 @@ int tempError,tempError2;
     //첫실행 확인용 변수
     myFirstRun = 0;
     
+    
 
     
     
@@ -96,7 +97,7 @@ int tempError,tempError2;
     secDistanceArray =[NSMutableArray array];
     [secDistanceArray addObject:@"start-distance"];// 배열에 기록
     
-    
+/*  요거이 두지점 값 넣고 얼럿창으로 거리 보여주는 거
     CLLocation* tempLoc=[[CLLocation alloc]initWithLatitude: 00.000000  longitude:00.000000];
     CLLocation* tempLoc2=[[CLLocation alloc]initWithLatitude:00.000010  longitude:00.000010];
     
@@ -113,7 +114,8 @@ int tempError,tempError2;
                                          otherButtonTitles:nil, nil];
     [alert show];
 
- 
+ */
+    
     
 }
 
@@ -154,7 +156,7 @@ int tempError,tempError2;
 
  #pragma mark 1sec_part       
     NSLog(@"secNum:%d",secNum);
-    if (secNum ==1) // (0.25*4 1초)에서 0.5초마다(secNum가 더해져서 1일때 실행되고 0으로 초기화)일 때 거리정보 계산을 추가로 실행함.
+    if (secNum ==3) // (0.25*4 1초)에서 1초마다(secNum가 더해져서 3일때 실행되고 0으로 초기화)일 때 거리정보 계산을 추가로 실행함.
     {
  
         
@@ -294,7 +296,7 @@ int tempError,tempError2;
  
 
         
-    } // 이하 0.2초마다 실행되는 부분 
+    } // 이하 0.25초마다 실행되는 부분 
 
  
     // 속도 처리
@@ -384,12 +386,24 @@ int tempError,tempError2;
             gpsProgressView.progress = (2.0f-pow(1.004f,newLocation.horizontalAccuracy-5.0f));
     }
     
+    //델리게이트 값에 근거한 거리 계산
+    if (myFirstRun == 0)
+    {
+        delOldLocation = newLocation;
+        myFirstRun ++;
+    }
+    
+    CLLocationDistance  delDist = abs([newLocation distanceFromLocation:delOldLocation]); // 거리 변화값 획득.
+    delTotalDist +=delDist;
+    delOldLocation = newLocation;
+    
+    
     // 정보 표시 (정보 갱신 있는지 확인)
 
 
     if (abs(howRecent) < 15.0f)
     {
-        infoTextView.text = [NSString stringWithFormat:@"위도 : %+6f\t경도 : %+6f\n높이 : %6.2f\t\t최고속 : %6.2fkm/h\n속도 : %6.2fm/s\t속도 : %6.2fkm/h\n누적이동거리 : %010.3fkm\n오차 : %dm\n필터 : %f",
+        infoTextView.text = [NSString stringWithFormat:@"위도 : %+6f\t경도 : %+6f\n높이 : %6.2f\t\t최고속 : %6.2fkm/h\n속도 : %6.2fm/s\t속도 : %6.2fkm/h\n누적이동거리 : %010.3fkm\n델누적거리 : %010.3fm\n필터 : %f",
                              newLocation.coordinate.latitude,//위도
                              newLocation.coordinate.longitude,//경도
                              newLocation.altitude, //tempAltitude
@@ -397,7 +411,7 @@ int tempError,tempError2;
                              newLocation.speed,//속도
                              tempSpeed,
                              prefTotalDist/1000,
-                             abs(totalDist2-totalDist),
+                             delTotalDist/1000,
                              self.locationManager.distanceFilter];
        
     }

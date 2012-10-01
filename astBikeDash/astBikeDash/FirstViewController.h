@@ -52,8 +52,11 @@
     double  old_lat;
     double  old_lon;
     float   compareDist;
-    
-    
+    // 델리게이트 내 거리 처리용
+    CLLocation*         delNewLocation;// 지금 위치를 기록
+    CLLocation*         delOldLocation;// 이전 위치를 기록
+    double              delTotalDist; // 총거리
+
     
 }
 
