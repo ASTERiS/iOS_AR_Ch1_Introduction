@@ -87,6 +87,9 @@
 @property (weak, nonatomic) IBOutlet UILabel *compareDistLabel;
 
 
+-(void)gpsIndicator:(CLLocation*)newLocation; //GPS 인디케이터
+-(void)infoDisplay:(CLLocation*)newLocation maxSpd:(CLLocationSpeed)maxSpeed tempSpeed:(CLLocationSpeed)tempSpeed prefTD:(double)prefTotalDist delTD:(double)delTotalDist; // 기타 정보 표시창 (하단)
+
 // GPS 거리 계산용 테스트 루틴
 //-(float)testGetDistP1lat:(double)P1_latitude P1lon:(double)P1_longitude P2lat:(double)P2_latitude P2lon:(double)P2_longitude;
 
