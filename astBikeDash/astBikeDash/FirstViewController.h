@@ -47,15 +47,16 @@
         CLLocationDistance  totalDistButton; // 변수내 값 확인용 총거리
     
     //신규 거리 계산용 저장 변수
-    double  new_lat;
-    double  new_lon;
-    double  old_lat;
-    double  old_lon;
+    CLLocation*     new_Location;//경위도 분리용
+    CLLocation*     old_Location;
+    CLLocationDistance          total_Dist;
+    
+    
     float   compareDist;
     // 델리게이트 내 거리 처리용
     CLLocation*         delNewLocation;// 지금 위치를 기록
     CLLocation*         delOldLocation;// 이전 위치를 기록
-    double              delTotalDist; // 총거리
+    CLLocationDistance              delTotalDist; // 총거리
 
     
 }
@@ -75,6 +76,7 @@
 
 @property (weak, nonatomic) IBOutlet UILabel *gpsTypeLabel;
 @property (strong, nonatomic) IBOutlet UILabel *checkButton;
+@property (weak, nonatomic) IBOutlet UILabel *latlonDistLabel;
 
 - (IBAction)totalDistButton:(id)sender;
 
@@ -88,7 +90,8 @@
 
 
 -(void)gpsIndicator:(CLLocation*)newLocation; //GPS 인디케이터
--(void)infoDisplay:(CLLocation*)newLocation maxSpd:(CLLocationSpeed)maxSpeed tempSpeed:(CLLocationSpeed)tempSpeed prefTD:(double)prefTotalDist delTD:(double)delTotalDist; // 기타 정보 표시창 (하단)
+
+-(void)infoDisplay:(CLLocation*)newLocation maxSpd:(CLLocationSpeed)maxSpeed tempSpeed:(CLLocationSpeed)tempSpeed prefTD:(double)prefTotalDist delTD:(double)delTotalDist howRecent:(double)howRecent;// 기타 정보 표시창 (하단)
 
 // GPS 거리 계산용 테스트 루틴
 //-(float)testGetDistP1lat:(double)P1_latitude P1lon:(double)P1_longitude P2lat:(double)P2_latitude P2lon:(double)P2_longitude;

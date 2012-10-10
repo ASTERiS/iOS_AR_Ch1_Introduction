@@ -29,7 +29,7 @@
 @synthesize locationManager;
 @synthesize checkButton;
 @synthesize compareDistLabel;
-
+@synthesize latlonDistLabel;
 
 
 int tempError,tempError2;
@@ -135,6 +135,7 @@ int tempError,tempError2;
     [self setCheckButton:nil];
 
     [self setCompareDistLabel:nil];
+    [self setLatlonDistLabel:nil];
     [super viewDidUnload];
     // Release any retained subviews of the main view.
     
@@ -226,6 +227,7 @@ int tempError,tempError2;
         if (secOldLocation==nil) // 첫실행으로 값이 없을 때의 초기화
         {
             secOldLocation = secNewLocation;
+            old_Location = new_Location; // 경도 위도 분리 값 추가
             [secDistanceArray addObject:@"0"];
             return;
         }
@@ -236,13 +238,7 @@ int tempError,tempError2;
         
         int tempGPSFlag = 1; // 임시로 GPS상태값을 알리는 변수. 1: 수신가능, 0:수신 불능
         CLLocationDistance  secDist = [secNewLocation distanceFromLocation:secOldLocation]; // 거리 변화값 획득.
-        new_lat = secNewLocation.coordinate.latitude;
-        new_lon = secNewLocation.coordinate.longitude;
-        old_lat = secOldLocation.coordinate.latitude;
-        old_lon = secOldLocation.coordinate.longitude;
-        
-
-
+        CLLocationDistance temp_Dist = abs([new_Location distanceFromLocation:old_Location]); // 경위도 분리 변화값 획득
         
 // 이동속도 구할 수 없을 때의 처리 무효화. -> 테스트 후 넣을지 뺄지 고려해볼 것.
 /*
@@ -274,6 +270,9 @@ int tempError,tempError2;
         secTotalDistLabel.text= [NSString stringWithFormat:@"이동거리 : %010.3f",secTotalDist/1000]; // 레이블에 표시
         NSLog(@"secTotalDist %f", secTotalDist);
         
+        total_Dist += temp_Dist; //경위도 분리 값 기준 누적거리
+        latlonDistLabel.text = [NSString stringWithFormat:@"새이동거리: %010.3f",total_Dist/1000];// 
+        
         NSString* str = [NSString stringWithFormat:@"%f",secTotalDist];
         [secDistanceArray addObject:str];// 거리 배열에 현 누적거리 기록
         
@@ -292,6 +291,7 @@ int tempError,tempError2;
                 // GPS 플래그가 0이면 새 위치값을 이전 위치값으로 대입하지 않는다.
         }else{
         secOldLocation = secNewLocation; // 현제 위치정보를 이전 위치 정보로 기록함
+            old_Location = new_Location; // 경위도 분릭밧 기록
         }
  
 
@@ -351,7 +351,9 @@ int tempError,tempError2;
     
     // 시분할 작업용 위치정보 복사
     secNewLocation = newLocation;
-    
+    // 경도/위도 분리 위치 정보 복사
+    new_Location = [[CLLocation alloc]initWithLatitude:secNewLocation.coordinate.latitude longitude:secNewLocation.coordinate.longitude];
+
     
     //속도 : 초속에서 시속으로
 //    tempSpeed = [newLocation speed]*3.6f; // m/s를 km/h로 바꾸기 (60*60)/1000
