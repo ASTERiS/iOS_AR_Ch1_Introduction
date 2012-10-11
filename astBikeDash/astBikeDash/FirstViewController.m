@@ -31,6 +31,7 @@
 @synthesize compareDistLabel;
 @synthesize latlonDistLabel;
 
+#define ERR_CORRECT  1.1
 
 int tempError,tempError2;
 
@@ -238,7 +239,7 @@ int tempError,tempError2;
         
         int tempGPSFlag = 1; // 임시로 GPS상태값을 알리는 변수. 1: 수신가능, 0:수신 불능
         CLLocationDistance  secDist = [secNewLocation distanceFromLocation:secOldLocation]; // 거리 변화값 획득.
-        CLLocationDistance temp_Dist = abs([new_Location distanceFromLocation:old_Location]); // 경위도 분리 변화값 획득
+        CLLocationDistance temp_Dist = abs([new_Location distanceFromLocation:old_Location])*ERR_CORRECT; // 경위도 분리 변화값 획득
         
 // 이동속도 구할 수 없을 때의 처리 무효화. -> 테스트 후 넣을지 뺄지 고려해볼 것.
 /*
