@@ -34,8 +34,8 @@
     MKCoordinateRegion  region;
     MKCoordinateSpan    span;
     CGRect bounds = [[UIScreen mainScreen] bounds];
-    bounds.origin.y+= 140;
-    bounds.size.height-=140;
+    bounds.origin.y+= 150;
+    bounds.size.height-=150;
     
     
     map = [[MKMapView alloc]initWithFrame:bounds];
@@ -77,6 +77,34 @@
     // Dispose of any resources that can be recreated.
 }
 
+
+- (IBAction)filterButon:(id)sender {
+    switch ([sender tag]) {
+        case 100:
+            self.locationManager.distanceFilter = kCLDistanceFilterNone;               // 필터?
+            break;
+        case 101:
+            self.locationManager.distanceFilter = 0.1;               // 필터?
+            break;
+        case 102:
+            self.locationManager.distanceFilter = 0.5;               // 필터
+            break;
+        case 103:
+            self.locationManager.distanceFilter = 1;
+            NSLog(@"필터1");
+            break;
+        case 104:
+            self.locationManager.distanceFilter = 5;
+            break;
+        case 105:
+            self.locationManager.distanceFilter = 10;
+                        NSLog(@"필터10");
+            break;
+            
+        default:
+            break;
+    }
+}
 
 -(void)startLocationInit
 {
@@ -176,7 +204,8 @@
     
     CLLocationDistance  delDist = [newLocation distanceFromLocation:delOldLocation]; // 거리 변화값 획득.
     CLLocationDistance  delDist2 = abs(delDist*1000000)/1000000;
-    CLLocationDistance  delDist3 = delDist;
+    CLLocationDistance  delDist3 = fabs(delDist);
+    
     if (delDist<0){delDist = 0;}
     
     delTotalDist +=delDist;

@@ -36,6 +36,7 @@
 @property (weak, nonatomic) IBOutlet UILabel *gpsSignalView;
 @property (nonatomic, retain) CLLocationManager* locationManager; //
 @property (weak, nonatomic) IBOutlet UITextView *infoTextView;
+- (IBAction)filterButon:(id)sender;
 
 -(void)startLocationInit;
 -(void)gpsIndicator:(CLLocation*)newLocation;
