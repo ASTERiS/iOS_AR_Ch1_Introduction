@@ -19,7 +19,6 @@
 @synthesize locationManager;
 
 
-
 - (void)viewDidLoad
 {
     [super viewDidLoad];
@@ -27,8 +26,10 @@
     myFirstRun = 0;
     lastIdx = 0;
     [self startLocationInit];
+    double tempD=1.2345;
+    double tempE;
+    tempE = abs(tempD);
     
-
     
     MKCoordinateRegion  region;
     MKCoordinateSpan    span;
@@ -61,7 +62,15 @@
     secLocationArray =[NSMutableArray array];
     [secLocationArray addObject:@"start-location"];// 배열에 기록
 }
-
+- (void)viewDidUnload
+{
+    [self setInfoTextView:nil];
+    [self setGpsSignalView:nil];
+    [self setGpsProgressView:nil];
+    [super viewDidUnload];
+    // Release any retained subviews of the main view.
+    
+}
 - (void)didReceiveMemoryWarning
 {
     [super didReceiveMemoryWarning];
@@ -72,35 +81,28 @@
 -(void)startLocationInit
 {
     
-    locationManager=[[CLLocationManager alloc]init];
-    locationManager.delegate=self;
-    //    self.locationManager.desiredAccuracy = kCLLocationAccuracyBest;
-    locationManager.desiredAccuracy = kCLLocationAccuracyBestForNavigation;
+    self.locationManager=[[CLLocationManager alloc]init];
+    self.locationManager.delegate=self;
+    self.locationManager.desiredAccuracy = kCLLocationAccuracyBest;
+    //self.locationManager.desiredAccuracy = kCLLocationAccuracyBestForNavigation;
     
-    locationManager.distanceFilter = kCLDistanceFilterNone;               // 필터?
+    self.locationManager.distanceFilter = kCLDistanceFilterNone;               // 필터?
     //    self.locationManager.distanceFilter = 1.0f;               // 필터? (미터단위)
     
     
     // 혹시 이전 주요 위치변화 정보 모니터링 기능이 켜져있다면 끄고 시작한다.
     if ([CLLocationManager  significantLocationChangeMonitoringAvailable]) {
 		// Stop significant location updates and start normal location updates again since the app is in the forefront.
-		[locationManager stopMonitoringSignificantLocationChanges];
+		[self.locationManager stopMonitoringSignificantLocationChanges];
         NSLog(@"주요 위치변화 정보 모니터링 기능 OFF");
-		[locationManager startUpdatingLocation];
+		[self.locationManager startUpdatingLocation];
         //   		[self.locationManager startMonitoringSignificantLocationChanges];
 	}
 	else
     {
 		NSLog(@"Significant location change monitoring is not available.");
 	}
-    
-    //날짜 정보 초기화
-    calendar= nil;
-    comps = nil;
-    // 오브젝트 대입
-    calendar = [[NSCalendar alloc]initWithCalendarIdentifier:NSGregorianCalendar];
-    
-    
+     NSLog(@"0.%@",self.locationManager);
 }
 
 -(void)gpsIndicator:(CLLocation*)newLocation // GPS 상태 게이지 바 처리 루틴
@@ -150,7 +152,7 @@
     routeCoords[lastIdx] = CLLocationCoordinate2DMake(newLocation.coordinate.latitude, newLocation.coordinate.longitude);
     lastIdx++;
     
- //   NSLog(@"델리게이트 호출#1");
+    NSLog(@"델리게이트 호출#1");
     // 델리게이트 정보 취득 후 시간 흐름 체크
     NSDate* eventDate = newLocation.timestamp;
     NSTimeInterval howRecent = [eventDate timeIntervalSinceNow];
@@ -172,21 +174,27 @@
         myFirstRun ++;
     }
     
-    CLLocationDistance  delDist = abs([newLocation distanceFromLocation:delOldLocation]); // 거리 변화값 획득.
+    CLLocationDistance  delDist = [newLocation distanceFromLocation:delOldLocation]; // 거리 변화값 획득.
+    CLLocationDistance  delDist2 = abs(delDist*1000000)/1000000;
+    CLLocationDistance  delDist3 = delDist;
+    if (delDist<0){delDist = 0;}
+    
     delTotalDist +=delDist;
+    delTotalDist2 +=delDist2;
+    delTotalDist3 +=delDist3;
     delOldLocation = newLocation;
     
 
      if (abs(howRecent) < 15.0f)
      {
-     infoTextView.text = [NSString stringWithFormat:@"위도 : %+6f\t경도 : %+6f\n높이 : %6.2f\t\t최고속 : %6.2fkm/h\n속도 : %6.2fm/s\t속도 : %6.2fkm/h\n델누적거리 : %010.3fm\n필터 : %f",
+     infoTextView.text = [NSString stringWithFormat:@"위도 : %+6f\t경도 : %+6f\n높이 : %6.2f\t\t최고속 : %6.2fkm/h\n속도 : %6.2fm/s\t속도 : %6.2fkm/h\n누적거리#1 : %06.3fkm #2: %06.3fkm \n누적거리#3 : %06.3fkm   필터 : %f",
      newLocation.coordinate.latitude,//위도
      newLocation.coordinate.longitude,//경도
      newLocation.altitude, //tempAltitude
      maxSpeed,
      newLocation.speed,//속도
      tempSpeed,
-     delTotalDist/1000,
+     delTotalDist/1000,delTotalDist2/1000,delTotalDist3/1000,
      self.locationManager.distanceFilter];
      
      }
@@ -196,13 +204,11 @@
 
 
     
-}
+     }
          [map setCenterCoordinate:CLLocationCoordinate2DMake(newLocation.coordinate.latitude, newLocation.coordinate.longitude) animated:YES];
     
         [self createRoute];
-/*
 
-*/
     
 }
 
@@ -252,7 +258,7 @@
     
     MKPolylineView *plView = [[MKPolylineView alloc] initWithOverlay:overlay];
     plView.strokeColor = [UIColor redColor];
-    plView.lineWidth = 5.0;
+    plView.lineWidth = 20.0;
  
     return plView;
     

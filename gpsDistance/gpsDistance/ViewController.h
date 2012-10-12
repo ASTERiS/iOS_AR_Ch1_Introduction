@@ -22,8 +22,9 @@
     // 델리게이트 내 거리 처리용
     CLLocation*         delNewLocation;// 지금 위치를 기록
     CLLocation*         delOldLocation;// 이전 위치를 기록
-    CLLocationDistance              delTotalDist; // 총거리
-    
+    CLLocationDistance  delTotalDist; // 총거리
+    CLLocationDistance  delTotalDist2; // 총거리
+    CLLocationDistance  delTotalDist3; // 총거리
     //지도 관련
     MKMapView*          map;
     NSMutableArray*     secLocationArray;

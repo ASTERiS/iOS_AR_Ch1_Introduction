@@ -99,21 +99,7 @@ int tempError,tempError2;
     [secDistanceArray addObject:@"start-distance"];// 배열에 기록
     
 /*  요거이 두지점 값 넣고 얼럿창으로 거리 보여주는 거
-    CLLocation* tempLoc=[[CLLocation alloc]initWithLatitude: 00.000000  longitude:00.000000];
-    CLLocation* tempLoc2=[[CLLocation alloc]initWithLatitude:00.000010  longitude:00.000010];
-    
-    
-    
-    CLLocationDistance  secDist = [tempLoc distanceFromLocation:tempLoc2]; // 거리 변화값 획득.
-    
-
-    
-    UIAlertView* alert = [[UIAlertView alloc]initWithTitle:@""
-                                                   message:[NSString stringWithFormat:@"거리 : %f",secDist]
-                                                  delegate:self
-                                         cancelButtonTitle:@"OK"
-                                         otherButtonTitles:nil, nil];
-    [alert show];
+    `
 
  */
     
@@ -239,7 +225,7 @@ int tempError,tempError2;
         
         int tempGPSFlag = 1; // 임시로 GPS상태값을 알리는 변수. 1: 수신가능, 0:수신 불능
         CLLocationDistance  secDist = [secNewLocation distanceFromLocation:secOldLocation]; // 거리 변화값 획득.
-        CLLocationDistance temp_Dist = abs([new_Location distanceFromLocation:old_Location])*ERR_CORRECT; // 경위도 분리 변화값 획득
+        CLLocationDistance temp_Dist = [new_Location distanceFromLocation:old_Location]; // 경위도 분리 변화값 획득
         
 // 이동속도 구할 수 없을 때의 처리 무효화. -> 테스트 후 넣을지 뺄지 고려해볼 것.
 /*
@@ -266,13 +252,13 @@ int tempError,tempError2;
         
         NSLog(@"secTempDistDouble : %f",secTempDistDouble);
         
-        secTotalDist = abs(secDist) + secTempDistDouble; // 기존 거리값과 변화값을 더해줌 (절대값!!!!!!!!!)
+        secTotalDist = abs(secDist*1000000)/1000000 + secTempDistDouble; // 기존 거리값과 변화값을 더해줌 (절대값!!!!!!!!!)
         
         secTotalDistLabel.text= [NSString stringWithFormat:@"이동거리 : %010.3f",secTotalDist/1000]; // 레이블에 표시
         NSLog(@"secTotalDist %f", secTotalDist);
         
         total_Dist += temp_Dist; //경위도 분리 값 기준 누적거리
-        latlonDistLabel.text = [NSString stringWithFormat:@"새이동거리: %010.3f",total_Dist/1000];// 
+        latlonDistLabel.text = [NSString stringWithFormat:@"새이동거리: %010.3f",total_Dist/1000];//
         
         NSString* str = [NSString stringWithFormat:@"%f",secTotalDist];
         [secDistanceArray addObject:str];// 거리 배열에 현 누적거리 기록
@@ -280,7 +266,7 @@ int tempError,tempError2;
         
         
         // 현재 구한 거리를 누적 거리에 더하고 누적 거리를 프리퍼런스에 기록.
-        prefTotalDist += abs(secDist);
+        prefTotalDist += abs(secDist*1000000)/1000000;
         //
         //            NSUserDefaults* pref = [NSUserDefaults standardUserDefaults];
         [pref setFloat:prefTotalDist forKey:@"prefTotalDist"];
@@ -373,7 +359,7 @@ int tempError,tempError2;
         myFirstRun ++;
     }
     
-    CLLocationDistance  delDist = abs([newLocation distanceFromLocation:delOldLocation]); // 거리 변화값 획득.
+    CLLocationDistance  delDist = abs([newLocation distanceFromLocation:delOldLocation]*1000000)/1000000; // 거리 변화값 획득.
     delTotalDist +=delDist;
     delOldLocation = newLocation;
     
