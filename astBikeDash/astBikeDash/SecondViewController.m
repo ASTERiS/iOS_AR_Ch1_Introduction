@@ -46,7 +46,15 @@ enum filterButtonTag {
 {
     [super viewDidLoad];
 	// Do any additional setup after loading the view, typically from a nib.
-   
+/*
+    NSString* str = [NSString stringWithFormat:@"테스트: %d",testVar];
+    UIAlertView* alert = [[UIAlertView alloc]initWithTitle:@""
+                                                   message:str
+                                                  delegate:self
+                                         cancelButtonTitle:@"OK"
+                                         otherButtonTitles:nil, nil];
+    [alert show];
+*/   
 }
 
 - (void)viewDidUnload

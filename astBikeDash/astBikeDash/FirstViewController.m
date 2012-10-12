@@ -67,10 +67,7 @@ int tempError,tempError2;
     secNum = 0;
     //첫실행 확인용 변수
     myFirstRun = 0;
-    
-    
 
-    
     
     [self startLocationInit];    // 위치정보 초기화 호출
     
@@ -98,10 +95,6 @@ int tempError,tempError2;
     secDistanceArray =[NSMutableArray array];
     [secDistanceArray addObject:@"start-distance"];// 배열에 기록
     
-/*  요거이 두지점 값 넣고 얼럿창으로 거리 보여주는 거
-    `
-
- */
     
     
 }
