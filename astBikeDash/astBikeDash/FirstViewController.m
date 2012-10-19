@@ -245,7 +245,7 @@ int tempError,tempError2;
         
         NSLog(@"secTempDistDouble : %f",secTempDistDouble);
         
-        secTotalDist = abs(secDist*1000000)/1000000 + secTempDistDouble; // 기존 거리값과 변화값을 더해줌 (절대값!!!!!!!!!)
+        secTotalDist = fabs(secDist) + secTempDistDouble; // 기존 거리값과 변화값을 더해줌 (절대값!!!!!!!!!)
         
         secTotalDistLabel.text= [NSString stringWithFormat:@"이동거리 : %010.3f",secTotalDist/1000]; // 레이블에 표시
         NSLog(@"secTotalDist %f", secTotalDist);
@@ -259,7 +259,7 @@ int tempError,tempError2;
         
         
         // 현재 구한 거리를 누적 거리에 더하고 누적 거리를 프리퍼런스에 기록.
-        prefTotalDist += abs(secDist*1000000)/1000000;
+        prefTotalDist += fabs(secDist);
         //
         //            NSUserDefaults* pref = [NSUserDefaults standardUserDefaults];
         [pref setFloat:prefTotalDist forKey:@"prefTotalDist"];
@@ -352,7 +352,7 @@ int tempError,tempError2;
         myFirstRun ++;
     }
     
-    CLLocationDistance  delDist = abs([newLocation distanceFromLocation:delOldLocation]*1000000)/1000000; // 거리 변화값 획득.
+    CLLocationDistance  delDist = fabs([newLocation distanceFromLocation:delOldLocation]); // 거리 변화값 획득.
     delTotalDist +=delDist;
     delOldLocation = newLocation;
     
